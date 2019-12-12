@@ -1,0 +1,27 @@
+#ifndef DINO_CONFIG_H
+#define DINO_CONFIG_H
+
+#ifndef LCD_HEIGHT
+#define LCD_HEIGHT 320
+#endif
+
+#define GAME_HEIGHT 150
+#define TOP_Y ((LCD_HEIGHT - GAME_HEIGHT) / 2)
+#define BOTTOM_Y (GAME_HEIGHT + TOP_Y)
+#define GROUND_LEVEL (BOTTOM_Y - 12)
+
+#define FPS 60
+#define ONE_SECOND 32768
+#define FRAME_TIME (ONE_SECOND / FPS)
+
+#define SHOW_FPS 1
+
+
+#define GRAVITY 0.6
+#define INITIAL_JUMP_VELOCITY -10
+#define DROP_VELOCITY -5
+#define SPEED_DROP_COEFFICIENT 3
+#define MAX_JUMP_HEIGHT 63
+#define MIN_JUMP_HEIGHT 30
+
+#endif //DINO_CONFIG_H

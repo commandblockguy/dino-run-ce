@@ -1,0 +1,9 @@
+src/gfx/*.c
+src/gfx/*.h
+src/gfx/convpng.log
+.idea/
+bin/
+cmake-build-debug/
+/*.png
+obj/
+orig.js
