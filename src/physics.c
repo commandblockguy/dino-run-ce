@@ -11,6 +11,10 @@ void update_physics(game_t *game) {
     }
 
     game->distance += game->dino.velocity_x.parts.iPart;
+    if(game->dino.velocity_x.combined < INT_TO_FIXED_POINT(MAX_SPEED)) {
+        game->dino.velocity_x.combined += FLOAT_TO_FIXED_POINT(ACCELERATION);
+        dbg_sprintf(dbgout, "speed %u\n", game->dino.velocity_x.parts.iPart);
+    }
 
     if(game->dino.jumping) dino_start_jump(&game->dino);
     if(!game->dino.jumping) dino_end_jump(&game->dino);

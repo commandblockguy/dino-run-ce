@@ -16,12 +16,14 @@
 
 #define SHOW_FPS 1
 
-
 #define GRAVITY 0.6
 #define INITIAL_JUMP_VELOCITY -10
 #define DROP_VELOCITY -5
 #define SPEED_DROP_COEFFICIENT 3
 #define MAX_JUMP_HEIGHT 63
 #define MIN_JUMP_HEIGHT 30
+
+#define ACCELERATION 0.001
+#define MAX_SPEED 13
 
 #endif //DINO_CONFIG_H
