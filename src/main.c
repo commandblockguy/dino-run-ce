@@ -55,10 +55,9 @@ void main(void) {
     game.frame = 0;
     game.distance = 0;
     game.dino.on_ground = true;
-    game.dino.y = GROUND_LEVEL;
+    game.dino.y.combined = INT_TO_FIXED_POINT(GROUND_LEVEL);
     game.dino.velocity_x.combined = INT_TO_FIXED_POINT(6);
     game.dino.velocity_y.combined = 0;
-    dbg_sprintf(dbgout, "%u\n", game.dino.velocity_x.parts.iPart);
 
     play(&game);
 

@@ -5,6 +5,7 @@
 #include "gfx/gfx.h"
 #include "sprites.h"
 #include "gamestate.h"
+#include "util.h"
 
 void init_graphics(void) {
     gfx_Begin();
@@ -74,6 +75,6 @@ void draw_dino(dino_t *dino, uint24_t frame) {
         }
     }
 
-    y = dino->y + 2 - sprite->height;
+    y = dino->y.parts.iPart + 2 - sprite->height;
     gfx_RLETSprite(sprite, DINO_OFFSET_X, y);
 }

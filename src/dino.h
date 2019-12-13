@@ -7,9 +7,9 @@
 #include "util.h"
 
 typedef struct Dino {
-    uint8_t y;
-    fixed_point_t velocity_x;
-    fixed_point_t velocity_y;
+    ufix_t y;
+    ifix_t velocity_x;
+    ifix_t velocity_y;
     bool alive;
     bool on_ground;
     bool ducking;

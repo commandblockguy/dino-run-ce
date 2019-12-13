@@ -12,7 +12,7 @@ void dino_start_jump(dino_t *dino) {
 }
 
 void dino_end_jump(dino_t *dino) {
-    if(dino->y >= GROUND_LEVEL - MIN_JUMP_HEIGHT && !dino->dropping) return;
+    if(dino->y.combined >= INT_TO_FIXED_POINT(GROUND_LEVEL - MIN_JUMP_HEIGHT) && !dino->dropping) return;
     if(dino->velocity_y.combined < INT_TO_FIXED_POINT(DROP_VELOCITY)) {
         dino->velocity_y.combined = INT_TO_FIXED_POINT(DROP_VELOCITY);
     }
