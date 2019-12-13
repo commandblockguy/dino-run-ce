@@ -14,6 +14,7 @@ void init_graphics(void) {
 }
 
 void draw(game_t *game) {
+    uint8_t i;
     gfx_FillScreen(0xFF);
 
     gfx_SetColor(0);
@@ -21,13 +22,14 @@ void draw(game_t *game) {
     gfx_FillRectangle(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
 
     draw_horizon(game->distance);
+
+    for(i = 0; i < NUM_OBSTACLES; i++) {
+        draw_obstacle(&game->obstacles[i], game->distance, game->frame);
+    }
+
     draw_dino(&game->dino, game->frame);
 #if SHOW_FPS
-    gfx_SetTextXY(0, 0);
-    gfx_SetTextFGColor(3); //todo: fix
-    gfx_PrintInt(timer_1_Counter, 3);
-    gfx_SetTextXY(0, 12);
-    gfx_PrintInt(ONE_SECOND / (uint24_t) timer_1_Counter, 3);
+    fps_counter();
 #endif
     gfx_SwapDraw();
 }
@@ -77,4 +79,44 @@ void draw_dino(dino_t *dino, uint24_t frame) {
 
     y = dino->y.parts.iPart + 2 - sprite->height;
     gfx_RLETSprite(sprite, DINO_OFFSET_X, y);
+}
+
+void draw_obstacle(obstacle_t *obstacle, uint24_t distance, uint24_t frame) {
+    int24_t x;
+    uint8_t y;
+    gfx_rletsprite_t *sprite;
+
+    y = obstacle->y;
+
+    switch(obstacle->type) {
+        case CACTUS_SMALL:
+            sprite = small_cacti[obstacle->size - 1];
+            break;
+        case CACTUS_LARGE:
+            sprite = large_cacti[obstacle->size - 1];
+            break;
+        case PTERODACTYL:
+            if((frame & (2 * PTERODACTYL_FLAP_SPEED)) > PTERODACTYL_FLAP_SPEED) {
+                sprite = bird_0;
+                y += PTERODACTLY_0_Y_OFFSET;
+            }
+            else {
+                sprite = bird_1;
+            }
+            break;
+        default:
+            return;
+    }
+
+    x = obstacle->x - distance + DINO_OFFSET_X;
+
+    gfx_RLETSprite(sprite, x, y);
+}
+
+void fps_counter(void) {
+    gfx_SetTextXY(0, 0);
+    gfx_SetTextFGColor(3); //todo: fix
+    gfx_PrintInt(timer_1_Counter, 3);
+    gfx_SetTextXY(0, 12);
+    gfx_PrintInt(ONE_SECOND / (uint24_t) timer_1_Counter, 3);
 }

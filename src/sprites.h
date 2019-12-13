@@ -11,6 +11,9 @@
 #define NUM_HORIZONS 5
 
 #define HORIZON_SEGMENT_WIDTH horizon_0_width
+#define SMALL_CACTUS_HEIGHT small_cactus_0_height
+
+#define PTERODACTLY_0_Y_OFFSET 6
 
 extern gfx_rletsprite_t *small_cacti[NUM_SMALL_CACTI];
 extern gfx_rletsprite_t *large_cacti[NUM_LARGE_CACTI];

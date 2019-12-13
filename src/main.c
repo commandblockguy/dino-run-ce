@@ -47,13 +47,11 @@ void play(game_t *game) {
 }
 
 void main(void) {
-    game_t game;
+    game_t game = {0};
     init_graphics();
 
 
     reset_timer();
-    game.frame = 0;
-    game.distance = 0;
     game.dino.on_ground = true;
     game.dino.y.combined = INT_TO_FIXED_POINT(GROUND_LEVEL);
     game.dino.velocity_x.combined = INT_TO_FIXED_POINT(6);
