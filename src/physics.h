@@ -5,6 +5,6 @@
 
 void update_physics(game_t *game);
 
-bool check_collision(dino_t *dino, obstacle_t *obstacle);
+bool check_collision(const dino_t *dino, const obstacle_t *obstacle);
 
 #endif //DINO_PHYSICS_H

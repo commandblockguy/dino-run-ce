@@ -23,4 +23,6 @@ void dino_start_jump(dino_t *dino);
 /* Stop jump and start falling if not doing so already */
 void dino_end_jump(dino_t *dino);
 
+void update_dino(dino_t *dino);
+
 #endif //DINO_DINO_H

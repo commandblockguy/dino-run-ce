@@ -26,4 +26,6 @@
 #define ACCELERATION 0.001
 #define MAX_SPEED 13
 
+#define DINO_OFFSET_X 13
+
 #endif //DINO_CONFIG_H

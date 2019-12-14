@@ -31,6 +31,14 @@ void play(game_t *game) {
         game->dino.dropping = kb_IsDown(kb_KeyDown) && !game->dino.on_ground;
         game->dino.jumping = kb_IsDown(kb_KeyUp);
 
+        if(kb_IsDown(kb_KeyEnter) && game->obstacles[0].x < game->distance - DINO_OFFSET_X) {
+            obstacle_t *obstacle = &game->obstacles[0];
+            obstacle->x = game->distance + 200;
+            obstacle->size = 3;
+            obstacle->type = CACTUS_LARGE;
+            obstacle->y = 100;
+        }
+
         update_physics(game);
 
         draw(game);
@@ -47,6 +55,7 @@ void play(game_t *game) {
 }
 
 void main(void) {
+    uint8_t i;
     game_t game = {0};
     init_graphics();
 
@@ -55,7 +64,10 @@ void main(void) {
     game.dino.on_ground = true;
     game.dino.y.combined = INT_TO_FIXED_POINT(GROUND_LEVEL);
     game.dino.velocity_x.combined = INT_TO_FIXED_POINT(6);
-    game.dino.velocity_y.combined = 0;
+    add_obstacle(&game.obstacles[0], &dummy_obstacle, game.dino.velocity_x);
+    for(i = 1; i < NUM_OBSTACLES; i++) {
+        add_obstacle(&game.obstacles[i], &game.obstacles[i - 1], game.dino.velocity_x);
+    }
 
     play(&game);
 

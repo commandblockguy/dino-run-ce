@@ -13,7 +13,7 @@ void init_graphics(void) {
     gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
 }
 
-void draw(game_t *game) {
+void draw(const game_t *game) {
     uint8_t i;
     gfx_FillScreen(0xFF);
 
@@ -61,7 +61,7 @@ void draw_horizon(uint24_t distance) {
     }
 }
 
-void draw_dino(dino_t *dino, uint24_t frame) {
+void draw_dino(const dino_t *dino, uint24_t frame) {
     gfx_rletsprite_t *sprite;
     uint8_t y;
 
@@ -81,7 +81,7 @@ void draw_dino(dino_t *dino, uint24_t frame) {
     gfx_RLETSprite(sprite, DINO_OFFSET_X, y);
 }
 
-void draw_obstacle(obstacle_t *obstacle, uint24_t distance, uint24_t frame) {
+void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame) {
     int24_t x;
     uint8_t y;
     gfx_rletsprite_t *sprite;
