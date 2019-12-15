@@ -26,6 +26,4 @@ void update_cloud(cloud_t *cloud, uint24_t distance);
 
 void init_clouds(cloud_t *clouds);
 
-extern const cloud_t dummy_cloud;
-
 #endif //DINO_CLOUDS_H
