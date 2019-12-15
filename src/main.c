@@ -63,11 +63,9 @@ void main(void) {
     reset_timer();
     game.dino.on_ground = true;
     game.dino.y.combined = INT_TO_FIXED_POINT(GROUND_LEVEL);
-    game.dino.velocity_x.combined = INT_TO_FIXED_POINT(6);
-    add_obstacle(&game.obstacles[0], &dummy_obstacle, game.dino.velocity_x);
-    for(i = 1; i < NUM_OBSTACLES; i++) {
-        add_obstacle(&game.obstacles[i], &game.obstacles[i - 1], game.dino.velocity_x);
-    }
+    game.dino.velocity_x.combined = INT_TO_FIXED_POINT(INITIAL_SPEED);
+
+    init_obstacles(game.obstacles);
 
     play(&game);
 

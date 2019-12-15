@@ -98,7 +98,7 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
         case PTERODACTYL:
             if((frame & (2 * PTERODACTYL_FLAP_SPEED)) > PTERODACTYL_FLAP_SPEED) {
                 sprite = bird_0;
-                y += PTERODACTLY_0_Y_OFFSET;
+                y += PTERODACTYL_0_Y_OFFSET;
             }
             else {
                 sprite = bird_1;

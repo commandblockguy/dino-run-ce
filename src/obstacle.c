@@ -6,7 +6,7 @@
 
 static uint24_t get_gap(obstacle_t *obstacle, ifix_t dino_velocity);
 
-void add_obstacle(obstacle_t *new, const obstacle_t *last, ifix_t dino_velocity) {
+void add_obstacle(obstacle_t *new, ifix_t dino_velocity) {
     obstacle_type_index_t max_possible_type;
     const obstacle_type_data_t *type_data;
 
@@ -43,9 +43,38 @@ void add_obstacle(obstacle_t *new, const obstacle_t *last, ifix_t dino_velocity)
     }
 
     new->x_offset.combined = 0;
-    new->x = last->x + last->gap;
+    new->x = new->last->x + new->last->gap;
 
     new->gap = get_gap(new, dino_velocity);
+}
+
+void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_velocity) {
+    obstacle->x_offset.combined += obstacle->velocity.combined;
+
+    if(obstacle->x_offset.parts.iPart) {
+        obstacle->x += obstacle->x_offset.parts.iPart;
+        obstacle->x_offset.parts.iPart = 0;
+    }
+
+    if((int24_t)(obstacle->x + obstacle->width) < (int24_t)(distance - DINO_OFFSET_X)) {
+
+        add_obstacle(obstacle, dino_velocity);
+    }
+}
+
+void init_obstacles(obstacle_t *obstacles) {
+    uint8_t i;
+    const ifix_t dino_speed = {INT_TO_FIXED_POINT(INITIAL_SPEED)};
+    /* Initialize the first obstacle using the dummy obstacle as the previous one */
+    obstacles[0].last = &dummy_obstacle;
+    add_obstacle(&obstacles[0], dino_speed);
+    /* Add the correct value of last to the first obstacle */
+    obstacles[0].last = &obstacles[NUM_OBSTACLES - 1];
+
+    for(i = 1; i < NUM_OBSTACLES; i++) {
+        obstacles[i].last = &obstacles[i - 1];
+        add_obstacle(&obstacles[i], dino_speed);
+    }
 }
 
 static uint24_t get_gap(obstacle_t *obstacle, ifix_t dino_velocity) {

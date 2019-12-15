@@ -23,6 +23,7 @@
 #define MAX_JUMP_HEIGHT 63
 #define MIN_JUMP_HEIGHT 30
 
+#define INITIAL_SPEED 6
 #define ACCELERATION 0.001
 #define MAX_SPEED 13
 
