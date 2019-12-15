@@ -1,6 +1,7 @@
 #include <debug.h>
 #include "obstacle.h"
 #include "physics.h"
+#include "clouds.h"
 #include "config.h"
 #include "util.h"
 
@@ -11,6 +12,9 @@ void update_physics(game_t *game) {
 
     for(i = 0; i < NUM_OBSTACLES; i++) {
         update_obstacle(&game->obstacles[i], game->distance, game->dino.velocity_x);
+    }
+    for(i = 0; i < NUM_CLOUDS; i++) {
+        update_cloud(&game->clouds[i], game->distance);
     }
 }
 

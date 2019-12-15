@@ -6,6 +6,7 @@
 #include "sprites.h"
 #include "gamestate.h"
 #include "util.h"
+#include "clouds.h"
 
 void init_graphics(void) {
     gfx_Begin();
@@ -25,6 +26,10 @@ void draw(const game_t *game) {
 
     for(i = 0; i < NUM_OBSTACLES; i++) {
         draw_obstacle(&game->obstacles[i], game->distance, game->frame);
+    }
+
+    for(i = 0; i < NUM_CLOUDS; i++) {
+        draw_cloud(&game->clouds[i], game->distance);
     }
 
     draw_dino(&game->dino, game->frame);
@@ -111,6 +116,10 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
     x = obstacle->x - distance + DINO_OFFSET_X;
 
     gfx_RLETSprite(sprite, x, y);
+}
+
+void draw_cloud(const cloud_t *cloud, uint24_t distance) {
+    gfx_RLETSprite(cloud_sprite, (int24_t)(cloud->x - distance) / 5, cloud->y);
 }
 
 void fps_counter(void) {

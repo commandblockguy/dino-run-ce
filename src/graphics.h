@@ -22,6 +22,8 @@ void draw_dino(const dino_t *dino, uint24_t frame);
 
 void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame);
 
+void draw_cloud(const cloud_t *cloud, uint24_t distance);
+
 void fps_counter(void);
 
 #endif //DINO_GRAPHICS_H

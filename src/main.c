@@ -66,6 +66,7 @@ void main(void) {
     game.dino.velocity_x.combined = INT_TO_FIXED_POINT(INITIAL_SPEED);
 
     init_obstacles(game.obstacles);
+    init_clouds(game.clouds);
 
     play(&game);
 
