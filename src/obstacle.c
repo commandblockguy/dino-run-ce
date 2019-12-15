@@ -49,7 +49,9 @@ void add_obstacle(obstacle_t *new, ifix_t dino_velocity) {
 }
 
 void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_velocity) {
-    obstacle->x_offset.combined += obstacle->velocity.combined;
+    if(obstacle->x < distance - DINO_OFFSET_X + LCD_WIDTH) {
+        obstacle->x_offset.combined += obstacle->velocity.combined;
+    }
 
     if(obstacle->x_offset.parts.iPart) {
         obstacle->x += obstacle->x_offset.parts.iPart;
@@ -57,7 +59,6 @@ void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_veloci
     }
 
     if((int24_t)(obstacle->x + obstacle->width) < (int24_t)(distance - DINO_OFFSET_X)) {
-
         add_obstacle(obstacle, dino_velocity);
     }
 }

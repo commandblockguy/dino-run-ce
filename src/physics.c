@@ -1,4 +1,5 @@
 #include <debug.h>
+#include "obstacle.h"
 #include "physics.h"
 #include "config.h"
 #include "util.h"
