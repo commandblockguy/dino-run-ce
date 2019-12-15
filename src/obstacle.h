@@ -55,7 +55,4 @@ void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_veloci
 
 void init_obstacles(obstacle_t *obstacles);
 
-/* A dummy obstacle used to add the first obstacle */
-extern const obstacle_t dummy_obstacle;
-
 #endif //DINO_OBSTACLE_H

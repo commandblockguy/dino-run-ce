@@ -66,11 +66,10 @@ void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_veloci
 void init_obstacles(obstacle_t *obstacles) {
     uint8_t i;
     const ifix_t dino_speed = {INT_TO_FIXED_POINT(INITIAL_SPEED)};
-    /* Initialize the first obstacle using the dummy obstacle as the previous one */
-    obstacles[0].last = &dummy_obstacle;
-    add_obstacle(&obstacles[0], dino_speed);
-    /* Add the correct value of last to the first obstacle */
+    /* Initialize the first obstacle with the last obstacle */
+    obstacles[NUM_OBSTACLES - 1].gap = 1000;
     obstacles[0].last = &obstacles[NUM_OBSTACLES - 1];
+    add_obstacle(&obstacles[0], dino_speed);
 
     for(i = 1; i < NUM_OBSTACLES; i++) {
         obstacles[i].last = &obstacles[i - 1];
@@ -108,16 +107,4 @@ const obstacle_type_data_t obstacle_types[NUM_OBSTACLE_TYPES] = {
             -1,
             90
         }
-};
-
-const obstacle_t dummy_obstacle = {
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1000
 };
