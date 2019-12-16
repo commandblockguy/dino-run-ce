@@ -1,8 +1,11 @@
+#include <stddef.h>
 #include <graphx.h>
+#include <fontlibc.h>
 #include <debug.h>
 
 #include "graphics.h"
 #include "gfx/gfx.h"
+#include "font/font.h"
 #include "sprites.h"
 #include "gamestate.h"
 #include "util.h"
@@ -12,6 +15,8 @@ void init_graphics(void) {
     gfx_Begin();
     gfx_SetDrawBuffer();
     gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
+    fontlib_SetFont(font, 0);
+    fontlib_SetWindowFullScreen();
 }
 
 void draw(const game_t *game) {
@@ -33,6 +38,14 @@ void draw(const game_t *game) {
     }
 
     draw_dino(&game->dino, game->frame);
+
+    draw_high_score(game->high_score);
+    if(game->distance_overrun) {
+        draw_distance_meter(0);
+    } else {
+        draw_distance_meter(game->distance);
+    }
+
 #if SHOW_FPS
     fps_counter();
 #endif
@@ -120,6 +133,19 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
 
 void draw_cloud(const cloud_t *cloud, uint24_t distance) {
     gfx_RLETSprite(cloud_sprite, (int24_t)(cloud->x - distance) / 5, cloud->y);
+}
+
+void draw_distance_meter(uint24_t distance) {
+    fontlib_SetCursorPosition(DISTANCE_METER_X, SCORE_TEXT_Y);
+    fontlib_SetForegroundColor(1); //todo: fix palette
+    fontlib_DrawUInt(distance / SCORE_DIVISOR, SCORE_DIGITS);
+}
+
+void draw_high_score(uint24_t score) {
+    fontlib_SetCursorPosition(HIGH_SCORE_X, SCORE_TEXT_Y);
+    fontlib_SetForegroundColor(7); //todo: fix palette
+    fontlib_DrawString("HI:");
+    fontlib_DrawUInt(score, SCORE_DIGITS);
 }
 
 void fps_counter(void) {

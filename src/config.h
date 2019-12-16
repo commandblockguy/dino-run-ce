@@ -29,4 +29,8 @@
 
 #define DINO_OFFSET_X 13
 
+#define SCORE_DIVISOR 40
+#define SCORE_DIGITS 5
+#define DISTANCE_METER_MAX 99999
+
 #endif //DINO_CONFIG_H

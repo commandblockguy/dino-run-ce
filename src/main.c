@@ -41,6 +41,10 @@ void play(game_t *game) {
 
         update_physics(game);
 
+        if(game->distance / SCORE_DIVISOR > DISTANCE_METER_MAX) {
+            game->distance_overrun = true;
+        }
+
         draw(game);
 
         while(!(timer_IntStatus & TIMER1_MATCH1)) {
