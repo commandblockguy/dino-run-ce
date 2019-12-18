@@ -16,6 +16,7 @@
 #include "util.h"
 #include "physics.h"
 #include "gfx/gfx.h"
+#include "score.h"
 
 void reset_timer(void) {
     timer_Control = TIMER1_DISABLE;
@@ -85,6 +86,7 @@ bool game_over() {
 void main(void) {
     game_t game;
 
+    ti_CloseAll();
 
     init_graphics();
 
@@ -98,12 +100,13 @@ void main(void) {
         game.dino.y.combined = INT_TO_FIXED_POINT(GROUND_LEVEL);
         game.dino.velocity_x.combined = INT_TO_FIXED_POINT(INITIAL_SPEED);
         game.distance_to_score = SCORE_DIVISOR;
+        game.high_score = get_score();
 
         init_obstacles(game.obstacles);
         init_clouds(game.clouds);
 
         quit = !play(&game);
-        //todo: high score
+        set_score(game.score);
         if(quit) {
             /* Player pressed clear */
             break;
