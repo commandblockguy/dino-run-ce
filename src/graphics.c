@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <string.h>
 #include <graphx.h>
 #include <fontlibc.h>
 #include <debug.h>
@@ -181,6 +182,7 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
 #endif
 }
 
+// todo: remove division
 void draw_cloud(const cloud_t *cloud, uint24_t distance) {
     gfx_RLETSprite(cloud_sprite, (int24_t)(cloud->x - distance) / 5, cloud->y);
 }
@@ -207,4 +209,24 @@ void fps_counter(void) {
     gfx_PrintInt(timer_1_Counter, 3);
     gfx_SetTextXY(0, 12);
     gfx_PrintInt(ONE_SECOND / (uint24_t) timer_1_Counter, 3);
+}
+
+void draw_game_over(void) {
+    const char game_over_text[] = "GAMEOVER";
+    const uint24_t base_x = (LCD_WIDTH - GAME_OVER_TOTAL_WIDTH) / 2;
+    uint8_t i;
+    gfx_SetDrawScreen();
+
+    fontlib_SetForegroundColor(1); // todo: fix
+
+    for(i = 0; i < strlen(game_over_text); i++) {
+        uint24_t x = base_x + (GAME_OVER_TEXT_WIDTH + GAME_OVER_TEXT_SPACING) * i;
+        if(i >= 4) x += GAME_OVER_SPACE_WIDTH;
+        fontlib_SetCursorPosition(x, GAME_OVER_TEXT_Y);
+        fontlib_DrawGlyph(game_over_text[i]);
+    }
+
+    gfx_RLETSprite(restart, (LCD_WIDTH - restart_width) / 2, RESTART_BUTTON_Y);
+
+    gfx_SetDrawBuffer();
 }

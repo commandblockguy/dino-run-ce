@@ -4,6 +4,7 @@
 #include "dino.h"
 #include "clouds.h"
 #include "obstacle.h"
+#include "config.h"
 
 typedef struct Game {
     uint24_t frame;

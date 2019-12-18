@@ -70,10 +70,20 @@ bool play(game_t *game) {
     }
 }
 
+bool game_over() {
+    draw_game_over();
+
+    while(true) {
+        kb_Scan();
+
+        if(kb_IsDown(kb_KeyClear)) return true;
+        if(kb_IsDown(kb_KeyEnter)) return false;
+        if(kb_IsDown(kb_Key2nd)) return false;
+    }
+}
+
 void main(void) {
-    uint8_t i;
-    game_t game = {0};
-    init_graphics();
+    game_t game;
 
 
     init_graphics();
@@ -99,18 +109,7 @@ void main(void) {
             break;
         } else {
             /* Player died */
-            gfx_SetDrawScreen();
-            gfx_RLETSprite(restart, (LCD_WIDTH - restart_width) / 2, (LCD_HEIGHT - restart_height) / 2);
-            gfx_SetDrawBuffer();
-
-            while(true) {
-                kb_Scan();
-
-                if(kb_IsDown(kb_KeyClear)) break;
-                if(kb_IsDown(kb_KeyEnter)) break;
-                if(kb_IsDown(kb_Key2nd)) break;
-            }
-            if(kb_IsDown(kb_KeyClear)) break;
+            if(game_over()) break;
         }
     }
 

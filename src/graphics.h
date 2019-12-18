@@ -14,7 +14,14 @@
 
 #define DISTANCE_METER_X 254
 #define HIGH_SCORE_X (DISTANCE_METER_X - 100)
-#define SCORE_TEXT_Y (TOP_Y + 5)
+#define SCORE_TEXT_Y (TOP_Y + 10)
+
+#define GAME_OVER_TEXT_Y (TOP_Y + 42)
+#define GAME_OVER_TEXT_WIDTH 11
+#define GAME_OVER_TEXT_SPACING 13
+#define GAME_OVER_SPACE_WIDTH 10
+#define GAME_OVER_TOTAL_WIDTH 191
+#define RESTART_BUTTON_Y (TOP_Y + 75)
 
 void init_graphics(void);
 
@@ -32,5 +39,7 @@ void draw_distance_meter(uint24_t score);
 void draw_high_score(uint24_t score);
 
 void fps_counter(void);
+
+void draw_game_over(void);
 
 #endif //DINO_GRAPHICS_H
