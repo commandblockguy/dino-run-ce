@@ -1,9 +1,7 @@
 #ifndef DINO_CONFIG_H
 #define DINO_CONFIG_H
 
-#ifndef LCD_HEIGHT
-#define LCD_HEIGHT 320
-#endif
+#include <tice.h>
 
 #define GAME_HEIGHT 150
 #define TOP_Y ((LCD_HEIGHT - GAME_HEIGHT) / 2)
@@ -15,6 +13,7 @@
 #define FRAME_TIME (ONE_SECOND / FPS)
 
 #define SHOW_FPS 1
+#define SHOW_BOXES 0
 
 #define GRAVITY 0.6
 #define INITIAL_JUMP_VELOCITY -10

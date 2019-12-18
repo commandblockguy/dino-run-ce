@@ -6,7 +6,7 @@
 /* For each CLOUD_PARALLAX_RATIO pixels that the ground moves, the clouds move one pixel */
 #define CLOUD_PARALLAX_RATIO 5
 
-#define NUM_CLOUDS 6
+#define NUM_CLOUDS 4
 #define MIN_CLOUD_GAP (100*CLOUD_PARALLAX_RATIO)
 #define MAX_CLOUD_GAP (400*CLOUD_PARALLAX_RATIO)
 #define MIN_CLOUD_Y (30 + TOP_Y)

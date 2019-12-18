@@ -10,6 +10,7 @@
 #include "gamestate.h"
 #include "util.h"
 #include "clouds.h"
+#include "physics.h"
 
 void init_graphics(void) {
     gfx_Begin();
@@ -80,6 +81,9 @@ void draw_horizon(uint24_t distance) {
 }
 
 void draw_dino(const dino_t *dino, uint24_t frame) {
+#if SHOW_BOXES
+    uint8_t i;
+#endif
     gfx_rletsprite_t *sprite;
     uint8_t y;
 
@@ -97,12 +101,34 @@ void draw_dino(const dino_t *dino, uint24_t frame) {
 
     y = dino->y.parts.iPart + 2 - sprite->height;
     gfx_RLETSprite(sprite, DINO_OFFSET_X, y);
+
+#if SHOW_BOXES
+    gfx_SetColor(31);
+
+    if(dino->ducking) {
+        gfx_Rectangle(DINO_OFFSET_X + dino_box_ducking.x1, y + dino_box_ducking.y1,
+                      dino_box_ducking.x2 - dino_box_ducking.x1,
+                      dino_box_ducking.y2 - dino_box_ducking.y1);
+    } else {
+        for(i = 0; i < 5; i++) {
+            const aabb_t *box = &dino_fine_boxes[i];
+            gfx_Rectangle(DINO_OFFSET_X + box->x1, y + box->y1, box->x2 - box->x1, box->y2 - box->y1);
+        }
+    }
+#endif
 }
 
 void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame) {
+#if SHOW_BOXES
+    uint8_t i;
+#endif
     int24_t x;
     uint8_t y;
     gfx_rletsprite_t *sprite;
+
+    x = obstacle->x - distance + DINO_OFFSET_X;
+
+    if(x > LCD_WIDTH) return;
 
     y = obstacle->y;
 
@@ -126,9 +152,22 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
             return;
     }
 
-    x = obstacle->x - distance + DINO_OFFSET_X;
-
     gfx_RLETSprite(sprite, x, y);
+
+#if SHOW_BOXES
+    gfx_SetColor(31);
+
+    for(i = 0; i < obstacle_types[obstacle->type].num_boxes; i++) {
+        const aabb_t *box = &obstacle_boxes[obstacle->type][i];
+        int j;
+        for(j = 0; j < obstacle->size; j++) {
+            gfx_Rectangle(x + j * obstacle_types[obstacle->type].width + box->x1,
+                          obstacle->y + box->y1, box->x2 - box->x1,
+                          box->y2 - box->y1);
+        }
+    }
+
+#endif
 }
 
 void draw_cloud(const cloud_t *cloud, uint24_t distance) {

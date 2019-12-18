@@ -29,7 +29,7 @@ typedef struct ObstacleTypeData {
     uint8_t y;
     ufix_t multiple_speed;
     uint8_t min_gap;
-    // todo: fine collision boxes?
+    uint8_t num_boxes;
 } obstacle_type_data_t;
 
 extern const obstacle_type_data_t obstacle_types[NUM_OBSTACLE_TYPES];

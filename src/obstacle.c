@@ -91,20 +91,23 @@ const obstacle_type_data_t obstacle_types[NUM_OBSTACLE_TYPES] = {
             35,
             TOP_Y + 105,
             INT_TO_FIXED_POINT(4),
-            72
+            72,
+            3
         },
         {
             25,
             50,
             TOP_Y + 90,
             INT_TO_FIXED_POINT(7),
-            72
+            72,
+            3
         },
         {
             46,
-            40,
+            27,
             0,
             -1,
-            90
+            90,
+            5
         }
 };

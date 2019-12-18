@@ -5,7 +5,7 @@
 # Set COMPRESSED to "YES" to create a compressed program
 # ----------------------------
 
-NAME        ?= DEMO
+NAME        ?= DINO
 COMPRESSED  ?= NO
 ICON        ?= iconc.png
 DESCRIPTION ?= "C SDK Demo"
@@ -26,3 +26,8 @@ DESCRIPTION ?= "C SDK Demo"
 #V                   ?= 1
 
 include $(CEDEV)/include/.makefile
+
+$(OBJDIR)/font/font.src: $(SRCDIR)/font/font.inc
+
+$(SRCDIR)/font/font.inc: $(SRCDIR)/font/dino.fnt
+	convfont -o carray -f $(SRCDIR)/font/dino.fnt $(SRCDIR)/font/font.inc

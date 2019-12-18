@@ -1,0 +1,3 @@
+[submodule "src/hid"]
+	path = src/hid
+	url = https://github.com/commandblockguy/hiddrvce

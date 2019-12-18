@@ -17,6 +17,11 @@ typedef struct Dino {
     bool jumping;
 } dino_t;
 
+#define DINO_HEIGHT 47
+#define DINO_WIDTH 44
+#define DINO_WIDTH_DUCK 59
+#define DINO_HEIGHT_DUCK 25
+
 /* Check if dino is on ground and if so start a jump */
 void dino_start_jump(dino_t *dino);
 
