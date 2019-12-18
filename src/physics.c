@@ -7,20 +7,6 @@
 #include "util.h"
 #include "dino.h"
 
-void update_physics(game_t *game) {
-    uint8_t i;
-    game->distance += game->dino.velocity_x.parts.iPart;
-    update_dino(&game->dino);
-
-    for(i = 0; i < NUM_OBSTACLES; i++) {
-        update_obstacle(&game->obstacles[i], game->distance, game->dino.velocity_x);
-        check_collision(&game->dino, game->distance, &game->obstacles[i]);
-    }
-    for(i = 0; i < NUM_CLOUDS; i++) {
-        update_cloud(&game->clouds[i], game->distance);
-    }
-}
-
 /* Apologies to whoever has to read this. I tried to keep it contained to one function. */
 bool check_collision(const dino_t *dino, uint24_t distance, const obstacle_t *obstacle) {
     aabb_t obstacle_box = {1, 1, 0, 0};

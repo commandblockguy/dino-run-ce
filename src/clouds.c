@@ -10,7 +10,7 @@ void add_cloud(cloud_t *new) {
 }
 
 void update_cloud(cloud_t *cloud, uint24_t distance) {
-    if(((int24_t)(cloud->x - distance + DINO_OFFSET_X) / 5 + CLOUD_WIDTH) < 0) {
+    if((int24_t)(cloud->x - distance + DINO_OFFSET_X) < -CLOUD_WIDTH * 5) {
         add_cloud(cloud);
     }
 }

@@ -14,7 +14,14 @@
 
 void init_graphics(void) {
     gfx_Begin();
+    gfx_FillScreen(0xFF);
+
+    gfx_SetColor(0);
+    gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
+    gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
     gfx_SetDrawBuffer();
+    gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
+    gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
     gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
     fontlib_SetFont(font, 0);
     fontlib_SetWindowFullScreen();
@@ -22,11 +29,9 @@ void init_graphics(void) {
 
 void draw(const game_t *game) {
     uint8_t i;
-    gfx_FillScreen(0xFF);
 
-    gfx_SetColor(0);
-    gfx_FillRectangle(0, 0, LCD_WIDTH, TOP_Y);
-    gfx_FillRectangle(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
+    gfx_SetColor(0xFF);
+    gfx_FillRectangle_NoClip(0, TOP_Y, LCD_WIDTH, BOTTOM_Y - TOP_Y );
 
     draw_horizon(game->distance);
 
@@ -44,7 +49,7 @@ void draw(const game_t *game) {
     if(game->distance_overrun) {
         draw_distance_meter(0);
     } else {
-        draw_distance_meter(game->distance);
+        draw_distance_meter(game->score);
     }
 
 #if SHOW_FPS
@@ -66,13 +71,15 @@ void draw_horizon(uint24_t distance) {
     y = HORIZON_SPRITE_BASE - horizons[segment]->height;
     gfx_RLETSprite(horizons[segment], x, y);
 
-    segment = (segment + 1) % NUM_HORIZONS;
+    segment++;
+    if(segment >= NUM_HORIZONS) segment = 0;
     x += HORIZON_SEGMENT_WIDTH;
     y = HORIZON_SPRITE_BASE - horizons[segment]->height;
     gfx_RLETSprite(horizons[segment], x, y);
 
     if(x + HORIZON_SEGMENT_WIDTH < LCD_WIDTH) {
-        segment = (segment + 1) % NUM_HORIZONS;
+        segment++;
+        if(segment >= NUM_HORIZONS) segment = 0;
         x += HORIZON_SEGMENT_WIDTH;
         y = HORIZON_SPRITE_BASE - horizons[segment]->height;
 
@@ -85,22 +92,26 @@ void draw_dino(const dino_t *dino, uint24_t frame) {
     uint8_t i;
 #endif
     gfx_rletsprite_t *sprite;
+    uint8_t base_y = dino->y.parts.iPart;
     uint8_t y;
+    uint24_t x = DINO_OFFSET_X;
 
-    if(!dino->on_ground) {
+    if(!dino->alive) {
+        x = DINO_OFFSET_X + 2;
+        sprite = dino_dead;
+        base_y -= 2;
+    } else if(!dino->on_ground) {
         sprite = dino_midair;
+    } else if((frame & (2 * DINO_STEP_SPEED)) > DINO_STEP_SPEED) {
+        /* Dino is on left foot */
+        sprite = dino->ducking ? dino_duck_left : dino_left;
     } else {
-        if((frame & (2 * DINO_STEP_SPEED)) > DINO_STEP_SPEED) {
-            /* Dino is on left foot */
-            sprite = dino->ducking ? dino_duck_left : dino_left;
-        } else {
-            /* Dino is on right foot */
-            sprite = dino->ducking ? dino_duck_right : dino_right;
-        }
+        /* Dino is on right foot */
+        sprite = dino->ducking ? dino_duck_right : dino_right;
     }
 
-    y = dino->y.parts.iPart + 2 - sprite->height;
-    gfx_RLETSprite(sprite, DINO_OFFSET_X, y);
+    y = base_y + 2 - sprite->height;
+    gfx_RLETSprite_NoClip(sprite, x, y);
 
 #if SHOW_BOXES
     gfx_SetColor(31);
@@ -174,10 +185,10 @@ void draw_cloud(const cloud_t *cloud, uint24_t distance) {
     gfx_RLETSprite(cloud_sprite, (int24_t)(cloud->x - distance) / 5, cloud->y);
 }
 
-void draw_distance_meter(uint24_t distance) {
+void draw_distance_meter(uint24_t score) {
     fontlib_SetCursorPosition(DISTANCE_METER_X, SCORE_TEXT_Y);
     fontlib_SetForegroundColor(1); //todo: fix palette
-    fontlib_DrawUInt(distance / SCORE_DIVISOR, SCORE_DIGITS);
+    fontlib_DrawUInt(score, SCORE_DIGITS);
 }
 
 void draw_high_score(uint24_t score) {
@@ -188,6 +199,9 @@ void draw_high_score(uint24_t score) {
 }
 
 void fps_counter(void) {
+    gfx_SetColor(0);
+    gfx_FillRectangle_NoClip(0, 0, 25, 20);
+
     gfx_SetTextXY(0, 0);
     gfx_SetTextFGColor(3); //todo: fix
     gfx_PrintInt(timer_1_Counter, 3);

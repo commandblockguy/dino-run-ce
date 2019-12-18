@@ -8,6 +8,8 @@
 typedef struct Game {
     uint24_t frame;
     uint24_t distance;
+    uint24_t score;
+    uint24_t distance_to_score;
     bool distance_overrun;
     dino_t dino;
     cloud_t clouds[NUM_CLOUDS];

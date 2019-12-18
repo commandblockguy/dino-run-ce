@@ -15,6 +15,7 @@
 #include "gamestate.h"
 #include "util.h"
 #include "physics.h"
+#include "gfx/gfx.h"
 
 void reset_timer(void) {
     timer_Control = TIMER1_DISABLE;
@@ -23,26 +24,36 @@ void reset_timer(void) {
     timer_Control = TIMER1_ENABLE | TIMER1_32K | TIMER1_NOINT | TIMER1_UP;
 }
 
-void play(game_t *game) {
-    do {
+bool play(game_t *game) {
+    while(true) {
+        uint8_t i;
         kb_Scan();
+
+        if(kb_IsDown(kb_KeyClear)) return false;
 
         game->dino.ducking = kb_IsDown(kb_KeyDown) && game->dino.on_ground;
         game->dino.dropping = kb_IsDown(kb_KeyDown) && !game->dino.on_ground;
         game->dino.jumping = kb_IsDown(kb_KeyUp);
 
-        if(kb_IsDown(kb_KeyEnter) && game->obstacles[0].x < game->distance - DINO_OFFSET_X) {
-            obstacle_t *obstacle = &game->obstacles[0];
-            obstacle->x = game->distance + 200;
-            obstacle->size = 3;
-            obstacle->type = CACTUS_LARGE;
-            obstacle->y = 100;
+        game->distance += game->dino.velocity_x.parts.iPart;
+        if(game->distance > game->distance_to_score) {
+            game->score++;
+            game->distance_to_score += SCORE_DIVISOR;
+            if(game->score > DISTANCE_METER_MAX) {
+                game->distance_overrun = true;
+            }
         }
 
-        update_physics(game);
+        update_dino(&game->dino);
 
-        if(game->distance / SCORE_DIVISOR > DISTANCE_METER_MAX) {
-            game->distance_overrun = true;
+        for(i = 0; i < NUM_OBSTACLES; i++) {
+            update_obstacle(&game->obstacles[i], game->distance, game->dino.velocity_x);
+            if(check_collision(&game->dino, game->distance, &game->obstacles[i])) {
+                game->dino.alive = false;
+            }
+        }
+        for(i = 0; i < NUM_CLOUDS; i++) {
+            update_cloud(&game->clouds[i], game->distance);
         }
 
         draw(game);
@@ -55,7 +66,8 @@ void play(game_t *game) {
 
         game->frame++;
 
-    } while(!kb_IsDown(kb_KeyClear));
+        if(!game->dino.alive) return true;
+    }
 }
 
 void main(void) {
@@ -64,15 +76,43 @@ void main(void) {
     init_graphics();
 
 
-    reset_timer();
-    game.dino.on_ground = true;
-    game.dino.y.combined = INT_TO_FIXED_POINT(GROUND_LEVEL);
-    game.dino.velocity_x.combined = INT_TO_FIXED_POINT(INITIAL_SPEED);
+    init_graphics();
 
-    init_obstacles(game.obstacles);
-    init_clouds(game.clouds);
+    while(true) {
+        bool quit;
 
-    play(&game);
+        memset(&game, 0, sizeof(game));
+        reset_timer();
+        game.dino.alive = true;
+        game.dino.on_ground = true;
+        game.dino.y.combined = INT_TO_FIXED_POINT(GROUND_LEVEL);
+        game.dino.velocity_x.combined = INT_TO_FIXED_POINT(INITIAL_SPEED);
+        game.distance_to_score = SCORE_DIVISOR;
+
+        init_obstacles(game.obstacles);
+        init_clouds(game.clouds);
+
+        quit = !play(&game);
+        //todo: high score
+        if(quit) {
+            /* Player pressed clear */
+            break;
+        } else {
+            /* Player died */
+            gfx_SetDrawScreen();
+            gfx_RLETSprite(restart, (LCD_WIDTH - restart_width) / 2, (LCD_HEIGHT - restart_height) / 2);
+            gfx_SetDrawBuffer();
+
+            while(true) {
+                kb_Scan();
+
+                if(kb_IsDown(kb_KeyClear)) break;
+                if(kb_IsDown(kb_KeyEnter)) break;
+                if(kb_IsDown(kb_Key2nd)) break;
+            }
+            if(kb_IsDown(kb_KeyClear)) break;
+        }
+    }
 
     gfx_End();
 }

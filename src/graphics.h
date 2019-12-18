@@ -28,7 +28,7 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
 
 void draw_cloud(const cloud_t *cloud, uint24_t distance);
 
-void draw_distance_meter(uint24_t distance);
+void draw_distance_meter(uint24_t score);
 void draw_high_score(uint24_t score);
 
 void fps_counter(void);
