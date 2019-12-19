@@ -10,11 +10,15 @@
 #include <graphx.h>
 #include <keypadc.h>
 #include <debug.h>
+#include <usbdrvce.h>
 
 #include "graphics.h"
 #include "gamestate.h"
 #include "util.h"
 #include "physics.h"
+#include "usb.h"
+#include "lib/steam_controller.h"
+#include "hid/usb_hid_keys.h"
 #include "gfx/gfx.h"
 #include "score.h"
 
@@ -28,6 +32,9 @@ void reset_timer(void) {
 bool play(game_t *game) {
     while(true) {
         uint8_t i;
+#if USE_USB
+        usb_HandleEvents();
+#endif
         kb_Scan();
 
         if(kb_IsDown(kb_KeyClear)) return false;
@@ -35,6 +42,9 @@ bool play(game_t *game) {
         game->dino.ducking = kb_IsDown(kb_KeyDown) && game->dino.on_ground;
         game->dino.dropping = kb_IsDown(kb_KeyDown) && !game->dino.on_ground;
         game->dino.jumping = kb_IsDown(kb_KeyUp);
+#ifdef USE_USB
+        || any_hid_mouse_held(game, HID_MOUSE_LEFT);
+#endif
 
         game->distance += game->dino.velocity_x.parts.iPart;
         if(game->distance > game->distance_to_score) {
@@ -86,6 +96,10 @@ bool game_over() {
 void main(void) {
     game_t game;
 
+#if USE_USB
+    start_usb(&game);
+#endif
+
     ti_CloseAll();
 
     init_graphics();
@@ -116,5 +130,10 @@ void main(void) {
         }
     }
 
+    exit:
     gfx_End();
+
+#if USE_USB
+    usb_Cleanup();
+#endif
 }

@@ -1,10 +1,12 @@
 #ifndef DINO_GAMESTATE_H
 #define DINO_GAMESTATE_H
 
+#include <usbdrvce.h>
 #include "dino.h"
 #include "clouds.h"
 #include "obstacle.h"
 #include "config.h"
+#include "hid/hid.h"
 
 typedef struct Game {
     uint24_t frame;

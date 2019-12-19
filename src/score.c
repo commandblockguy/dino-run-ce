@@ -26,7 +26,7 @@ void set_score(uint24_t score) {
     if(!slot) return;
 
     ti_Write(&score, sizeof(score), 1, slot);
-    
+
     ti_SetArchiveStatus(true, slot);
     ti_Close(slot);
 }
