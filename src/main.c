@@ -73,6 +73,31 @@ bool play(game_t *game) {
             update_cloud(&game->clouds[i], game->distance);
         }
 
+        if(game->distance > game->distance_to_time_change) {
+            game->day_stage++;
+            if(game->day_stage >= NUM_DAY_STAGES)
+                game->day_stage = DAY;
+
+            switch(game->day_stage) {
+                case DAY:
+                    game->distance_to_time_change += DAY_LENGTH;
+                    break;
+                case DAWN:
+                case DUSK:
+                    game->distance_to_time_change += INVERSION_DISTANCE;
+                    break;
+                case NIGHT:
+                    game->distance_to_time_change += NIGHT_LENGTH;
+                    break;
+            }
+        }
+
+        if(game->day_stage == DAWN) {
+            invert_palette(true);
+        } else if(game->day_stage == DUSK) {
+            invert_palette(false);
+        }
+
         draw(game);
 
         while(!(timer_IntStatus & TIMER1_MATCH1)) {
@@ -121,6 +146,7 @@ void main(void) {
         game.dino.velocity_x.combined = INT_TO_FIXED_POINT(INITIAL_SPEED);
         game.distance_to_score = SCORE_DIVISOR;
         game.high_score = get_score();
+        game.distance_to_time_change = NIGHT_CYCLE_INTERVAL;
 
         init_obstacles(game.obstacles);
         init_clouds(game.clouds);

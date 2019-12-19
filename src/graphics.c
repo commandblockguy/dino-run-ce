@@ -12,18 +12,20 @@
 #include "util.h"
 #include "clouds.h"
 #include "physics.h"
+#include "gfx/night.h"
 
 void init_graphics(void) {
     gfx_Begin();
-    gfx_FillScreen(0xFF);
+    gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
+    gfx_palette[WHITE] = 0xFFFF;
+    gfx_FillScreen(BG_COLOR);
 
-    gfx_SetColor(0);
+    gfx_SetColor(BLACK);
     gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
     gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
     gfx_SetDrawBuffer();
     gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
     gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
-    gfx_SetPalette(gfx_pal, sizeof_gfx_pal, 0);
     fontlib_SetFont(font, 0);
     fontlib_SetWindowFullScreen();
 }
@@ -31,7 +33,7 @@ void init_graphics(void) {
 void draw(const game_t *game) {
     uint8_t i;
 
-    gfx_SetColor(0xFF);
+    gfx_SetColor(BG_COLOR);
     gfx_FillRectangle_NoClip(0, TOP_Y, LCD_WIDTH, BOTTOM_Y - TOP_Y );
 
     draw_horizon(game->distance);
@@ -115,7 +117,7 @@ void draw_dino(const dino_t *dino, uint24_t frame) {
     gfx_RLETSprite_NoClip(sprite, x, y);
 
 #if SHOW_BOXES
-    gfx_SetColor(31);
+    gfx_SetColor(DINO_BOX_COLOR);
 
     if(dino->ducking) {
         gfx_Rectangle(DINO_OFFSET_X + dino_box_ducking.x1, y + dino_box_ducking.y1,
@@ -167,7 +169,7 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
     gfx_RLETSprite(sprite, x, y);
 
 #if SHOW_BOXES
-    gfx_SetColor(31);
+    gfx_SetColor(OBSTACLE_BOX_COLOR);
 
     for(i = 0; i < obstacle_types[obstacle->type].num_boxes; i++) {
         const aabb_t *box = &obstacle_boxes[obstacle->type][i];
@@ -189,23 +191,23 @@ void draw_cloud(const cloud_t *cloud, uint24_t distance) {
 
 void draw_distance_meter(uint24_t score) {
     fontlib_SetCursorPosition(DISTANCE_METER_X, SCORE_TEXT_Y);
-    fontlib_SetForegroundColor(1); //todo: fix palette
+    fontlib_SetColors(FG_COLOR, BG_COLOR);
     fontlib_DrawUInt(score, SCORE_DIGITS);
 }
 
 void draw_high_score(uint24_t score) {
     fontlib_SetCursorPosition(HIGH_SCORE_X, SCORE_TEXT_Y);
-    fontlib_SetForegroundColor(7); //todo: fix palette
+    fontlib_SetColors(HS_COLOR, BG_COLOR);
     fontlib_DrawString("HI:");
     fontlib_DrawUInt(score, SCORE_DIGITS);
 }
 
 void fps_counter(void) {
-    gfx_SetColor(0);
+    gfx_SetColor(BLACK);
     gfx_FillRectangle_NoClip(0, 0, 25, 20);
 
     gfx_SetTextXY(0, 0);
-    gfx_SetTextFGColor(3); //todo: fix
+    gfx_SetTextFGColor(WHITE);
     gfx_PrintInt(timer_1_Counter, 3);
     gfx_SetTextXY(0, 12);
     gfx_PrintInt(ONE_SECOND / (uint24_t) timer_1_Counter, 3);
@@ -217,7 +219,7 @@ void draw_game_over(void) {
     uint8_t i;
     gfx_SetDrawScreen();
 
-    fontlib_SetForegroundColor(1); // todo: fix
+    fontlib_SetColors(FG_COLOR, BG_COLOR);
 
     for(i = 0; i < strlen(game_over_text); i++) {
         uint24_t x = base_x + (GAME_OVER_TEXT_WIDTH + GAME_OVER_TEXT_SPACING) * i;
@@ -229,4 +231,37 @@ void draw_game_over(void) {
     gfx_RLETSprite(restart, (LCD_WIDTH - restart_width) / 2, RESTART_BUTTON_Y);
 
     gfx_SetDrawBuffer();
+}
+
+void set_dynamic_palette(bool day) {
+    uint16_t *palette;
+    if(day) {
+        palette = &gfx_pal[DYNAMIC_PALETTE_START];
+    } else {
+        palette = &night_pal[DYNAMIC_PALETTE_START];
+    }
+    gfx_SetPalette(palette, DYNAMIC_PALETTE_SIZE * 2, DYNAMIC_PALETTE_START);
+}
+
+void invert_palette(bool day) {
+    uint8_t i;
+    uint16_t *target_palette;
+
+    if(day) {
+        target_palette = gfx_pal;
+    } else {
+        target_palette = night_pal;
+    }
+
+    for(i = DYNAMIC_PALETTE_START; i < DYNAMIC_PALETTE_SIZE + DYNAMIC_PALETTE_START; i++) {
+        uint8_t current = gfx_palette[i] & 0x1F;
+        uint8_t target = target_palette[i] & 0x1F;
+        uint8_t new;
+
+        if(target < current) new = current - 1;
+        else if(target > current) new = current + 1;
+        else new = current;
+
+        gfx_palette[i] = (new & 1) << 15 | (new & 0x1F) << 10 | (new & 0x1F) << 5 | (new & 0x1F);
+    }
 }

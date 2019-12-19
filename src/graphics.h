@@ -23,6 +23,18 @@
 #define GAME_OVER_TOTAL_WIDTH 191
 #define RESTART_BUTTON_Y (TOP_Y + 75)
 
+#define NIGHT_CYCLE_INTERVAL 28000
+#define INVERSION_FRAMES 16
+#define INVERSION_DISTANCE (INVERSION_FRAMES * MAX_SPEED)
+#define NIGHT_LENGTH (8000 - INVERSION_DISTANCE)
+#define DAY_LENGTH (20000 - INVERSION_DISTANCE)
+
+
+#define DYNAMIC_PALETTE_SIZE 4
+#define DYNAMIC_PALETTE_START 1
+
+#define WHITE 9
+
 void init_graphics(void);
 
 void draw(const game_t *game);
@@ -41,5 +53,9 @@ void draw_high_score(uint24_t score);
 void fps_counter(void);
 
 void draw_game_over(void);
+
+void set_dynamic_palette(bool day);
+
+void invert_palette(bool day);
 
 #endif //DINO_GRAPHICS_H
