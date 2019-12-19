@@ -262,6 +262,6 @@ void invert_palette(bool day) {
         else if(target > current) new = current + 1;
         else new = current;
 
-        gfx_palette[i] = (new & 1) << 15 | (new & 0x1F) << 10 | (new & 0x1F) << 5 | (new & 0x1F);
+        gfx_palette[i] = (new == 0x1F) << 15 | (new & 0x1F) << 10 | (new & 0x1F) << 5 | (new & 0x1F);
     }
 }

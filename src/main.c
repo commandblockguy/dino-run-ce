@@ -51,6 +51,7 @@ bool play(game_t *game) {
         if(kb_IsDown(kb_Key1)) set_dynamic_palette(true);
         if(kb_IsDown(kb_Key2)) set_dynamic_palette(false);
         if(kb_IsDown(kb_Key3)) invert_palette(true);
+        if(kb_IsDown(kb_Key4)) invert_palette(false);
 
         game->distance += game->dino.velocity_x.parts.iPart;
         if(game->distance > game->distance_to_score) {
@@ -66,6 +67,7 @@ bool play(game_t *game) {
         for(i = 0; i < NUM_OBSTACLES; i++) {
             update_obstacle(&game->obstacles[i], game->distance, game->dino.velocity_x);
             if(check_collision(&game->dino, game->distance, &game->obstacles[i])) {
+                if(!kb_IsDown(kb_KeyGraph))
                 game->dino.alive = false;
             }
         }
@@ -147,6 +149,8 @@ void main(void) {
         game.distance_to_score = SCORE_DIVISOR;
         game.high_score = get_score();
         game.distance_to_time_change = NIGHT_CYCLE_INTERVAL;
+
+        set_dynamic_palette(true);
 
         init_obstacles(game.obstacles);
         init_clouds(game.clouds);
