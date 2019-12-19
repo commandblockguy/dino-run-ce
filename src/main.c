@@ -35,16 +35,22 @@ bool play(game_t *game) {
 #if USE_USB
         usb_HandleEvents();
 #endif
+
         kb_Scan();
 
         if(kb_IsDown(kb_KeyClear)) return false;
 
         game->dino.ducking = kb_IsDown(kb_KeyDown) && game->dino.on_ground;
         game->dino.dropping = kb_IsDown(kb_KeyDown) && !game->dino.on_ground;
-        game->dino.jumping = kb_IsDown(kb_KeyUp);
-#ifdef USE_USB
-        || any_hid_mouse_held(game, HID_MOUSE_LEFT);
+        game->dino.jumping = kb_IsDown(kb_KeyUp)
+#if USE_USB
+        || any_hid_mouse_held(game, HID_MOUSE_LEFT)
 #endif
+        ;
+
+        if(kb_IsDown(kb_Key1)) set_dynamic_palette(true);
+        if(kb_IsDown(kb_Key2)) set_dynamic_palette(false);
+        if(kb_IsDown(kb_Key3)) invert_palette(true);
 
         game->distance += game->dino.velocity_x.parts.iPart;
         if(game->distance > game->distance_to_score) {
