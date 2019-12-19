@@ -7,14 +7,14 @@
 #define CLOUD_PARALLAX_RATIO 5
 
 #define NUM_CLOUDS 4
-#define MIN_CLOUD_GAP (100*CLOUD_PARALLAX_RATIO)
-#define MAX_CLOUD_GAP (400*CLOUD_PARALLAX_RATIO)
+#define MIN_CLOUD_GAP 100
+#define MAX_CLOUD_GAP 400
 #define MIN_CLOUD_Y (30 + TOP_Y)
 #define MAX_CLOUD_Y (71 + TOP_Y)
 #define CLOUD_WIDTH 46
 
 typedef struct Cloud {
-    uint24_t x;
+    int24_t x;
     uint8_t y;
     uint24_t gap;
     const struct Cloud *last;
@@ -22,7 +22,9 @@ typedef struct Cloud {
 
 void add_cloud(cloud_t *new);
 
-void update_cloud(cloud_t *cloud, uint24_t distance);
+void update_clouds(cloud_t *clouds, uint24_t distance, uint24_t *next_distance);
+
+void update_cloud(cloud_t *cloud, uint8_t offset);
 
 void init_clouds(cloud_t *clouds);
 

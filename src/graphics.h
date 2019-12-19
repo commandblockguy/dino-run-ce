@@ -23,12 +23,6 @@
 #define GAME_OVER_TOTAL_WIDTH 191
 #define RESTART_BUTTON_Y (TOP_Y + 75)
 
-#define NIGHT_CYCLE_INTERVAL 28000
-#define INVERSION_FRAMES 32
-#define INVERSION_DISTANCE (INVERSION_FRAMES * MAX_SPEED)
-#define NIGHT_LENGTH (8000 - INVERSION_DISTANCE)
-#define DAY_LENGTH (20000 - INVERSION_DISTANCE)
-
 
 #define DYNAMIC_PALETTE_SIZE 4
 #define DYNAMIC_PALETTE_START 1
@@ -45,7 +39,7 @@ void draw_dino(const dino_t *dino, uint24_t frame);
 
 void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame);
 
-void draw_cloud(const cloud_t *cloud, uint24_t distance);
+void draw_cloud(const cloud_t *cloud);
 
 void draw_distance_meter(uint24_t score);
 void draw_high_score(uint24_t score);

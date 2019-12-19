@@ -15,12 +15,11 @@
 #include "graphics.h"
 #include "gamestate.h"
 #include "util.h"
-#include "physics.h"
 #include "usb.h"
 #include "lib/steam_controller.h"
 #include "hid/usb_hid_keys.h"
-#include "gfx/gfx.h"
 #include "score.h"
+#include "night.h"
 
 void reset_timer(void) {
     timer_Control = TIMER1_DISABLE;
@@ -64,41 +63,11 @@ bool play(game_t *game) {
 
         update_dino(&game->dino);
 
-        for(i = 0; i < NUM_OBSTACLES; i++) {
-            update_obstacle(&game->obstacles[i], game->distance, game->dino.velocity_x);
-            if(check_collision(&game->dino, game->distance, &game->obstacles[i])) {
-                if(!kb_IsDown(kb_KeyGraph))
-                game->dino.alive = false;
-            }
-        }
-        for(i = 0; i < NUM_CLOUDS; i++) {
-            update_cloud(&game->clouds[i], game->distance);
-        }
+        update_obstacles(game->obstacles, &game->dino, game->distance);
 
-        if(game->distance > game->distance_to_time_change) {
-            game->day_stage++;
-            if(game->day_stage >= NUM_DAY_STAGES)
-                game->day_stage = DAY;
+        update_clouds(game->clouds, game->distance, &game->distance_to_cloud_movement);
 
-            switch(game->day_stage) {
-                case DAY:
-                    game->distance_to_time_change += DAY_LENGTH;
-                    break;
-                case DAWN:
-                case DUSK:
-                    game->distance_to_time_change += INVERSION_DISTANCE;
-                    break;
-                case NIGHT:
-                    game->distance_to_time_change += NIGHT_LENGTH;
-                    break;
-            }
-        }
-
-        if(game->day_stage == DAWN) {
-            invert_palette(true);
-        } else if(game->day_stage == DUSK) {
-            invert_palette(false);
-        }
+        update_day_stage(game);
 
         draw(game);
 

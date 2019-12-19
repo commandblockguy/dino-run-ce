@@ -1,8 +1,10 @@
 #include <tice.h>
 #include <debug.h>
+#include <keypadc.h>
 #include "obstacle.h"
 #include "config.h"
 #include "util.h"
+#include "physics.h"
 
 static uint24_t get_gap(obstacle_t *obstacle, ifix_t dino_velocity);
 
@@ -46,6 +48,18 @@ void add_obstacle(obstacle_t *new, ifix_t dino_velocity) {
     new->x = new->last->x + new->last->gap;
 
     new->gap = get_gap(new, dino_velocity);
+}
+
+void update_obstacles(obstacle_t *obstacles, dino_t *dino, uint24_t distance) {
+    uint8_t i;
+    for(i = 0; i < NUM_OBSTACLES; i++) {
+        update_obstacle(&obstacles[i], distance, dino->velocity_x);
+
+        if(check_collision(dino, distance, &obstacles[i])) {
+            if(!kb_IsDown(kb_KeyGraph))
+                dino->alive = false;
+        }
+    }
 }
 
 void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_velocity) {

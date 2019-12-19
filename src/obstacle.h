@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "util.h"
+#include "dino.h"
 
 /* The max number of cacti in one group */
 #define MAX_CACTI_LENGTH 3
@@ -50,6 +51,8 @@ typedef struct Obstacle {
 /* Add a new obstacle at location new. */
 /* last should be the obstacle furthest from the dino (last to be added) */
 void add_obstacle(obstacle_t *new, ifix_t dino_velocity);
+
+void update_obstacles(obstacle_t *obstacles, dino_t *dino, uint24_t distance);
 
 void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_velocity);
 

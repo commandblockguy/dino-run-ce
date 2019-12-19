@@ -25,6 +25,7 @@ typedef struct Game {
     bool distance_overrun;
     dino_t dino;
     cloud_t clouds[NUM_CLOUDS];
+    uint24_t distance_to_cloud_movement;
     obstacle_t obstacles[NUM_OBSTACLES];
     uint24_t high_score;
     day_stage_t day_stage;

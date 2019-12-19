@@ -33,6 +33,12 @@ void init_graphics(void) {
 void draw(const game_t *game) {
     uint8_t i;
 
+    if(game->day_stage == DAWN) {
+        invert_palette(true);
+    } else if(game->day_stage == DUSK) {
+        invert_palette(false);
+    }
+
     gfx_SetColor(BG_COLOR);
     gfx_FillRectangle_NoClip(0, TOP_Y, LCD_WIDTH, BOTTOM_Y - TOP_Y );
 
@@ -43,7 +49,7 @@ void draw(const game_t *game) {
     }
 
     for(i = 0; i < NUM_CLOUDS; i++) {
-        draw_cloud(&game->clouds[i], game->distance);
+        draw_cloud(&game->clouds[i]);
     }
 
     draw_dino(&game->dino, game->frame);
@@ -184,9 +190,8 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
 #endif
 }
 
-// todo: remove division
-void draw_cloud(const cloud_t *cloud, uint24_t distance) {
-    gfx_RLETSprite(cloud_sprite, (int24_t)(cloud->x - distance) / 5, cloud->y);
+void draw_cloud(const cloud_t *cloud) {
+    gfx_RLETSprite(cloud_sprite, cloud->x, cloud->y);
 }
 
 void draw_distance_meter(uint24_t score) {
