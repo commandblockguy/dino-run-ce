@@ -23,6 +23,7 @@
 #define GAME_OVER_TOTAL_WIDTH 191
 #define RESTART_BUTTON_Y (TOP_Y + 75)
 
+#define MOON_Y (TOP_Y + 30)
 
 #define DYNAMIC_PALETTE_SIZE 4
 #define DYNAMIC_PALETTE_START 1
@@ -40,6 +41,10 @@ void draw_dino(const dino_t *dino, uint24_t frame);
 void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame);
 
 void draw_cloud(const cloud_t *cloud);
+
+void draw_moon(const moon_t *moon);
+
+void draw_star(const star_t *star);
 
 void draw_distance_meter(uint24_t score);
 void draw_high_score(uint24_t score);

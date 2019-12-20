@@ -44,12 +44,23 @@ void draw(const game_t *game) {
 
     draw_horizon(game->distance);
 
-    for(i = 0; i < NUM_OBSTACLES; i++) {
-        draw_obstacle(&game->obstacles[i], game->distance, game->frame);
+    if(game->day_stage != DAY) {
+        if((gfx_palette[STAR_COLOR] & 0x1F) > (gfx_palette[BG_COLOR] & 0x1F)) {
+            for(i = 0; i < MAX_NUM_STARS; i++) {
+                draw_star(&game->stars[i]);
+            }
+        }
+
+        if((gfx_palette[CLOUD_COLOR] & 0x1F) > (gfx_palette[BG_COLOR] & 0x1F))
+            draw_moon(&game->moon);
     }
 
     for(i = 0; i < NUM_CLOUDS; i++) {
         draw_cloud(&game->clouds[i]);
+    }
+
+    for(i = 0; i < NUM_OBSTACLES; i++) {
+        draw_obstacle(&game->obstacles[i], game->distance, game->frame);
     }
 
     draw_dino(&game->dino, game->frame);
@@ -192,6 +203,15 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
 
 void draw_cloud(const cloud_t *cloud) {
     gfx_RLETSprite(cloud_sprite, cloud->x, cloud->y);
+}
+
+void draw_moon(const moon_t *moon) {
+    if(moon->phase == NUM_MOONS - 1) return;
+    gfx_RLETSprite(moons[moon->phase], moon->x, MOON_Y);
+}
+
+void draw_star(const star_t *star) {
+    gfx_RLETSprite(stars[star->type], star->x, star->y);
 }
 
 void draw_distance_meter(uint24_t score) {

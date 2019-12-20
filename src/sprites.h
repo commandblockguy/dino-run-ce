@@ -6,7 +6,7 @@
 
 #define NUM_SMALL_CACTI 3
 #define NUM_LARGE_CACTI 3
-#define NUM_MOONS 7
+#define NUM_MOONS 8
 #define NUM_STARS 3
 #define NUM_HORIZONS 5
 

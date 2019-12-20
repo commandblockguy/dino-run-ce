@@ -7,15 +7,7 @@
 #include "obstacle.h"
 #include "config.h"
 #include "hid/hid.h"
-
-enum {
-    DAY,
-    DUSK,
-    NIGHT,
-    DAWN,
-    NUM_DAY_STAGES
-};
-typedef uint8_t day_stage_t;
+#include "night.h"
 
 typedef struct Game {
     uint24_t frame;
@@ -28,8 +20,11 @@ typedef struct Game {
     uint24_t distance_to_cloud_movement;
     obstacle_t obstacles[NUM_OBSTACLES];
     uint24_t high_score;
-    day_stage_t day_stage;
+    uint8_t day_stage;
     uint24_t distance_to_time_change;
+    moon_t moon;
+    star_t stars[MAX_NUM_STARS];
+    uint24_t star_movement_frame;
 } game_t;
 
 #endif //DINO_GAMESTATE_H
