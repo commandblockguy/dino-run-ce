@@ -22,4 +22,7 @@ typedef union {
 #define INT_TO_FIXED_POINT(i) (((i) << 16))
 #define FLOAT_TO_FIXED_POINT(i) (((i) * (1 << 16)))
 
+#define str(a) #a
+#define xstr(a) str(a)
+
 #endif //DINO_UTIL_H

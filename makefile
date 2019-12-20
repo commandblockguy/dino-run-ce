@@ -6,15 +6,18 @@
 # ----------------------------
 
 NAME        ?= DINO
-COMPRESSED  ?= NO
+COMPRESSED  ?= YES
 ICON        ?= iconc.png
-DESCRIPTION ?= "C SDK Demo"
+DESCRIPTION ?= "Dino Run CE"
 
 # ----------------------------
 # Other Options (Advanced)
 # ----------------------------
 
-#EXTRA_CFLAGS        ?=
+GIT_COMMIT := $(shell git rev-parse --short HEAD)
+GIT_DIFF_STATUS := $(shell git diff-index --quiet HEAD; echo $$?)
+
+EXTRA_CFLAGS        += COMMIT=$(GIT_COMMIT) DIFF_STATUS=$(GIT_DIFF_STATUS)
 #USE_FLASH_FUNCTIONS ?= YES|NO
 #OUTPUT_MAP          ?= YES|NO
 #ARCHIVED            ?= YES|NO
@@ -31,3 +34,40 @@ $(OBJDIR)/font/font.src: $(SRCDIR)/font/font.inc
 
 $(SRCDIR)/font/font.inc: $(SRCDIR)/font/dino.fnt
 	convfont -o carray -f $(SRCDIR)/font/dino.fnt $(SRCDIR)/font/font.inc
+	
+clean_gfx:
+	-rm src/gfx/convpng.log
+	-rm src/gfx/*.c
+	-rm src/gfx/*.h
+
+usb:
+	make clean
+	make EXTRA_CFLAGS=USE_USB=1
+
+no_usb:
+	echo $(GIT_COMMIT)
+	make clean
+	make EXTRA_CFLAGS=USE_USB=0
+
+# Format a release for the Cemetech archives
+release:
+	make clean
+	make clean_gfx
+
+	-rm -r dino_run
+	mkdir dino_run
+	cp readme.md dino_run
+	markdown readme.md > dino_run/readme.html
+
+	mkdir dino_run/source
+	cp -r src iconc.png makefile dino_run/source
+
+	make gfx
+	make usb
+	cp bin/DINO.8xp dino_run/DINO-USB.8xp
+	make no_usb
+	cp bin/DINO.8xp dino_run/DINO.8xp
+
+	-rm dino_run.zip
+	zip -r dino_run.zip dino_run
+	rm -r dino_run

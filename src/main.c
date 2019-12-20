@@ -1,25 +1,25 @@
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
 #include <tice.h>
 
-#include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <graphx.h>
 #include <keypadc.h>
 #include <debug.h>
-#include <usbdrvce.h>
 
 #include "graphics.h"
 #include "gamestate.h"
 #include "util.h"
+#include "score.h"
+#include "night.h"
+
+#if USE_USB
+#include <usbdrvce.h>
 #include "usb.h"
 #include "lib/steam_controller.h"
 #include "hid/usb_hid_keys.h"
-#include "score.h"
-#include "night.h"
+#endif
 
 game_t game;
 
@@ -33,6 +33,7 @@ void reset_timer(void) {
 bool play(void) {
     while(true) {
         uint8_t i;
+        bool jump_pressed, duck_pressed;
 #if USE_USB
         usb_HandleEvents();
 #endif
@@ -41,18 +42,21 @@ bool play(void) {
 
         if(kb_IsDown(kb_KeyClear)) return false;
 
-        game.dino.ducking = kb_IsDown(kb_KeyDown) && game.dino.on_ground;
-        game.dino.dropping = kb_IsDown(kb_KeyDown) && !game.dino.on_ground;
-        game.dino.jumping = kb_IsDown(kb_KeyUp)
 #if USE_USB
-        || any_hid_mouse_held(HID_MOUSE_LEFT)
+        duck_pressed = kb_IsDown(kb_KeyDown) ||
+                       any_hid_held(KEY_DOWN) ||
+                       any_hid_mouse_held(HID_MOUSE_RIGHT);
+        jump_pressed = kb_IsDown(kb_KeyUp) ||
+                       any_hid_held(KEY_UP) ||
+                       any_hid_mouse_held(HID_MOUSE_LEFT);
+#else
+        duck_pressed = kb_IsDown(kb_KeyDown);
+        jump_pressed = kb_IsDown(kb_KeyUp);
 #endif
-        ;
 
-        if(kb_IsDown(kb_Key1)) set_dynamic_palette(true);
-        if(kb_IsDown(kb_Key2)) set_dynamic_palette(false);
-        if(kb_IsDown(kb_Key3)) invert_palette(true);
-        if(kb_IsDown(kb_Key4)) invert_palette(false);
+        game.dino.ducking = duck_pressed && game.dino.on_ground;
+        game.dino.dropping = duck_pressed && !game.dino.on_ground;
+        game.dino.jumping = jump_pressed;
 
         game.distance += game.dino.velocity_x.parts.iPart;
         if(game.distance > game.distance_to_score) {
@@ -76,6 +80,9 @@ bool play(void) {
         while(!(timer_IntStatus & TIMER1_MATCH1)) {
             kb_Scan();
             if(kb_IsDown(kb_KeyClear)) break;
+#if USE_USB
+            if(any_hid_held(KEY_ESC)) break;
+#endif
         }
         reset_timer();
 
@@ -94,6 +101,11 @@ bool game_over() {
         if(kb_IsDown(kb_KeyClear)) return true;
         if(kb_IsDown(kb_KeyEnter)) return false;
         if(kb_IsDown(kb_Key2nd)) return false;
+#if USE_USB
+        if(any_hid_held(KEY_ESC)) return true;
+        if(any_hid_held(KEY_ENTER)) return false;
+        if(any_hid_mouse_held(HID_MOUSE_LEFT)) return false;
+#endif
     }
 }
 
@@ -101,6 +113,12 @@ void main(void) {
 #if USE_USB
     start_usb(&game);
 #endif
+
+    dbg_sprintf(dbgout, "Dino Run CE starting\n");
+    dbg_sprintf(dbgout, "Version %s\n", xstr(VERSION));
+    dbg_sprintf(dbgout, "Git commit %s, changed: %s\n",
+                xstr(COMMIT), xstr(DIFF_STATUS));
+    dbg_sprintf(dbgout, "Built %s %s\n", __TIME__, __DATE__);
 
     ti_CloseAll();
 

@@ -20,14 +20,19 @@ void init_graphics(void) {
     gfx_palette[WHITE] = 0xFFFF;
     gfx_FillScreen(BG_COLOR);
 
+    fontlib_SetFont(font, 0);
+    fontlib_SetWindowFullScreen();
+
+#if LETTERBOX
     gfx_SetColor(BLACK);
     gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
     gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
     gfx_SetDrawBuffer();
     gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
     gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
-    fontlib_SetFont(font, 0);
-    fontlib_SetWindowFullScreen();
+#endif
+
+    gfx_SetDrawBuffer();
 }
 
 void draw(void) {

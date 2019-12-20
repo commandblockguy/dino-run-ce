@@ -6,6 +6,11 @@
 #include "util.h"
 #include "physics.h"
 
+#if USE_USB
+#include "usb.h"
+#include "hid/usb_hid_keys.h"
+#endif
+
 static uint24_t get_gap(obstacle_t *obstacle);
 
 void add_obstacle(obstacle_t *new) {
@@ -56,8 +61,14 @@ void update_obstacles(void) {
         update_obstacle(&game.obstacles[i]);
 
         if(check_collision(&game.obstacles[i])) {
-            if(!kb_IsDown(kb_KeyGraph))
-                game.dino.alive = false;
+#if USE_CHEATS
+            if(!kb_IsDown(kb_KeyGraph)
+#if USE_USB
+               && !any_hid_held(KEY_F5)
+#endif
+            )
+#endif
+            game.dino.alive = false;
         }
     }
 }

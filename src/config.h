@@ -12,8 +12,15 @@
 #define ONE_SECOND 32768
 #define FRAME_TIME (ONE_SECOND / FPS)
 
+#ifndef SHOW_FPS
 #define SHOW_FPS 1
+#endif SHOW_FPS
+#ifndef SHOW_BOXES
 #define SHOW_BOXES 0
+#endif
+#ifndef USE_CHEATS
+#define USE_CHEATS 1
+#endif
 
 #define GRAVITY 0.6
 #define INITIAL_JUMP_VELOCITY -10
@@ -32,7 +39,22 @@
 #define SCORE_DIGITS 5
 #define DISTANCE_METER_MAX 99999
 
+#define LETTERBOX 1
+
+#ifndef USE_USB
 #define USE_USB 0
+#endif
 #define MAX_HID_DEVICES 4
+
+#ifndef COMMIT
+#define COMMIT (N/A)
+#endif
+#ifndef DIFF_STATUS
+#define DIFF_STATUS (N/A)
+#endif
+#ifndef VERSION
+#define VERSION 1.0
+#endif
+
 
 #endif //DINO_CONFIG_H
