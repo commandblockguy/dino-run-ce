@@ -22,10 +22,10 @@ typedef struct Cloud {
 
 void add_cloud(cloud_t *new);
 
-void update_clouds(cloud_t *clouds, uint24_t distance, uint24_t *next_distance);
+void update_clouds(void);
 
 void update_cloud(cloud_t *cloud, uint8_t offset);
 
-void init_clouds(cloud_t *clouds);
+void init_clouds(void);
 
 #endif //DINO_CLOUDS_H

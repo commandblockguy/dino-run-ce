@@ -32,17 +32,17 @@
 
 void init_graphics(void);
 
-void draw(const game_t *game);
+void draw(void);
 
 void draw_horizon(uint24_t distance);
 
-void draw_dino(const dino_t *dino, uint24_t frame);
+void draw_dino(void);
 
-void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame);
+void draw_obstacle(const obstacle_t *obstacle);
 
 void draw_cloud(const cloud_t *cloud);
 
-void draw_moon(const moon_t *moon);
+void draw_moon(void);
 
 void draw_star(const star_t *star);
 

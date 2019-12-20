@@ -25,6 +25,15 @@ typedef struct Game {
     moon_t moon;
     star_t stars[MAX_NUM_STARS];
     uint24_t star_movement_frame;
+#if USE_USB
+    struct {
+        usb_device_t controller_dev;
+        uint8_t steam_interface;
+        hid_state_t hids[MAX_HID_DEVICES];
+    } usb;
+#endif
 } game_t;
+
+extern game_t game;
 
 #endif //DINO_GAMESTATE_H

@@ -10,7 +10,7 @@ typedef struct AABB {
     uint8_t y2;
 } aabb_t;
 
-bool check_collision(const dino_t *dino, uint24_t distance, const obstacle_t *obstacle);
+bool check_collision(const obstacle_t *obstacle);
 
 bool check_AABB_collision(const aabb_t *bb1, uint24_t x1, uint8_t y1,
                           const aabb_t *bb2, uint24_t x2, uint8_t y2);

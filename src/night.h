@@ -39,16 +39,14 @@ typedef struct {
     uint24_t movement_frame;
 } moon_t;
 
-struct Game;
+void update_day_stage(void);
 
-void update_day_stage(struct Game *game);
+void update_moon(void);
 
-void update_moon(moon_t *moon, uint24_t frame);
-
-void update_stars(star_t *stars, uint24_t frame, uint24_t *next_frame);
+void update_stars(void);
 
 void update_star(star_t *star, uint8_t offset);
 
-void place_stars(star_t *stars);
+void place_stars(void);
 
 #endif //DINO_NIGHT_H

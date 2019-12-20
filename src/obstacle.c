@@ -6,13 +6,13 @@
 #include "util.h"
 #include "physics.h"
 
-static uint24_t get_gap(obstacle_t *obstacle, ifix_t dino_velocity);
+static uint24_t get_gap(obstacle_t *obstacle);
 
-void add_obstacle(obstacle_t *new, ifix_t dino_velocity) {
+void add_obstacle(obstacle_t *new) {
     obstacle_type_index_t max_possible_type;
     const obstacle_type_data_t *type_data;
 
-    if(dino_velocity.combined < FLOAT_TO_FIXED_POINT(PTERODACTYL_MIN_SPEED)) {
+    if(game.dino.velocity_x.combined < FLOAT_TO_FIXED_POINT(PTERODACTYL_MIN_SPEED)) {
         max_possible_type = CACTUS_LARGE;
     } else {
         max_possible_type = PTERODACTYL;
@@ -21,7 +21,7 @@ void add_obstacle(obstacle_t *new, ifix_t dino_velocity) {
     new->type = randInt(0, max_possible_type);
     type_data = &obstacle_types[new->type];
 
-    if(dino_velocity.combined > type_data->multiple_speed.combined) {
+    if(game.dino.velocity_x.combined > type_data->multiple_speed.combined) {
         new->size = randInt(1, MAX_CACTI_LENGTH);
     } else {
         new->size = 1;
@@ -47,23 +47,23 @@ void add_obstacle(obstacle_t *new, ifix_t dino_velocity) {
     new->x_offset.combined = 0;
     new->x = new->last->x + new->last->gap;
 
-    new->gap = get_gap(new, dino_velocity);
+    new->gap = get_gap(new);
 }
 
-void update_obstacles(obstacle_t *obstacles, dino_t *dino, uint24_t distance) {
+void update_obstacles(void) {
     uint8_t i;
     for(i = 0; i < NUM_OBSTACLES; i++) {
-        update_obstacle(&obstacles[i], distance, dino->velocity_x);
+        update_obstacle(&game.obstacles[i]);
 
-        if(check_collision(dino, distance, &obstacles[i])) {
+        if(check_collision(&game.obstacles[i])) {
             if(!kb_IsDown(kb_KeyGraph))
-                dino->alive = false;
+                game.dino.alive = false;
         }
     }
 }
 
-void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_velocity) {
-    if(obstacle->x < distance - DINO_OFFSET_X + LCD_WIDTH) {
+void update_obstacle(obstacle_t *obstacle) {
+    if(obstacle->x < game.distance - DINO_OFFSET_X + LCD_WIDTH) {
         obstacle->x_offset.combined += obstacle->velocity.combined;
     }
 
@@ -72,27 +72,27 @@ void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_veloci
         obstacle->x_offset.parts.iPart = 0;
     }
 
-    if((int24_t)(obstacle->x + obstacle->width) < (int24_t)(distance - DINO_OFFSET_X)) {
-        add_obstacle(obstacle, dino_velocity);
+    if((int24_t)(obstacle->x + obstacle->width) < (int24_t)(game.distance - DINO_OFFSET_X)) {
+        add_obstacle(obstacle);
     }
 }
 
-void init_obstacles(obstacle_t *obstacles) {
+void init_obstacles(void) {
     uint8_t i;
     const ifix_t dino_speed = {INT_TO_FIXED_POINT(INITIAL_SPEED)};
     /* Initialize the first obstacle with the last obstacle */
-    obstacles[NUM_OBSTACLES - 1].gap = 1000;
-    obstacles[0].last = &obstacles[NUM_OBSTACLES - 1];
-    add_obstacle(&obstacles[0], dino_speed);
+    game.obstacles[NUM_OBSTACLES - 1].gap = 1000;
+    game.obstacles[0].last = &game.obstacles[NUM_OBSTACLES - 1];
+    add_obstacle(&game.obstacles[0]);
 
     for(i = 1; i < NUM_OBSTACLES; i++) {
-        obstacles[i].last = &obstacles[i - 1];
-        add_obstacle(&obstacles[i], dino_speed);
+        game.obstacles[i].last = &game.obstacles[i - 1];
+        add_obstacle(&game.obstacles[i]);
     }
 }
 
-static uint24_t get_gap(obstacle_t *obstacle, ifix_t dino_velocity) {
-    uint24_t min_gap = obstacle->width * dino_velocity.parts.iPart
+static uint24_t get_gap(obstacle_t *obstacle) {
+    uint24_t min_gap = obstacle->width * game.dino.velocity_x.parts.iPart
             + obstacle_types[obstacle->type].min_gap;
     uint24_t max_gap = min_gap * MAX_GAP_COEFFICIENT;
 

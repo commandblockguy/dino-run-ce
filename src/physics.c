@@ -8,22 +8,22 @@
 #include "dino.h"
 
 /* Apologies to whoever has to read this. I tried to keep it contained to one function. */
-bool check_collision(const dino_t *dino, uint24_t distance, const obstacle_t *obstacle) {
+bool check_collision(const obstacle_t *obstacle) {
     aabb_t obstacle_box = {1, 1, 0, 0};
-    uint8_t base_y = dino->y.parts.iPart - (dino->ducking ? DINO_HEIGHT_DUCK : DINO_HEIGHT);
+    uint8_t base_y = game.dino.y.parts.iPart - (game.dino.ducking ? DINO_HEIGHT_DUCK : DINO_HEIGHT);
 
     obstacle_box.x2 = obstacle->width - 1;
     obstacle_box.y2 = obstacle->height - 1;
 
-    if(check_AABB_collision(dino->ducking ? &dino_box_ducking : &rough_dino_box,
-                            distance, base_y, &obstacle_box, obstacle->x, obstacle->y)) {
+    if(check_AABB_collision(game.dino.ducking ? &dino_box_ducking : &rough_dino_box,
+                            game.distance, base_y, &obstacle_box, obstacle->x, obstacle->y)) {
         uint8_t max_obstacle = obstacle_types[obstacle->type].num_boxes;
         uint8_t obstacle_num;
         for(obstacle_num = 0; obstacle_num < max_obstacle; obstacle_num++) {
             uint8_t j;
             for(j = 0; j < obstacle->size; j++) {
-                if(dino->ducking) {
-                    if(check_AABB_collision(&dino_box_ducking, distance, base_y,
+                if(game.dino.ducking) {
+                    if(check_AABB_collision(&dino_box_ducking, game.distance, base_y,
                                             &obstacle_boxes[obstacle->type][obstacle_num],
                                             obstacle->x + j * obstacle_types[obstacle->type].width,
                                             obstacle->y)) {
@@ -32,10 +32,11 @@ bool check_collision(const dino_t *dino, uint24_t distance, const obstacle_t *ob
                 } else {
                     uint8_t dino_box;
                     for(dino_box = 0; dino_box < 6; dino_box++) {
-                        if(check_AABB_collision(&dino_fine_boxes[dino_box], distance, base_y,
-                                                &obstacle_boxes[obstacle->type][obstacle_num],
-                                                obstacle->x + j * obstacle_types[obstacle->type].width,
-                                                obstacle->y)) {
+                        if(check_AABB_collision(&dino_fine_boxes[dino_box],
+                                game.distance, base_y,
+                                &obstacle_boxes[obstacle->type][obstacle_num],
+                                obstacle->x + j * obstacle_types[obstacle->type].width,
+                                obstacle->y)) {
                             return true;
                         }
                     }

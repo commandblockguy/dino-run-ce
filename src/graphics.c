@@ -30,46 +30,46 @@ void init_graphics(void) {
     fontlib_SetWindowFullScreen();
 }
 
-void draw(const game_t *game) {
+void draw(void) {
     uint8_t i;
 
-    if(game->day_stage == DAWN) {
+    if(game.day_stage == DAWN) {
         invert_palette(true);
-    } else if(game->day_stage == DUSK) {
+    } else if(game.day_stage == DUSK) {
         invert_palette(false);
     }
 
     gfx_SetColor(BG_COLOR);
     gfx_FillRectangle_NoClip(0, TOP_Y, LCD_WIDTH, BOTTOM_Y - TOP_Y );
 
-    draw_horizon(game->distance);
+    draw_horizon(game.distance);
 
-    if(game->day_stage != DAY) {
+    if(game.day_stage != DAY) {
         if((gfx_palette[STAR_COLOR] & 0x1F) > (gfx_palette[BG_COLOR] & 0x1F)) {
             for(i = 0; i < MAX_NUM_STARS; i++) {
-                draw_star(&game->stars[i]);
+                draw_star(&game.stars[i]);
             }
         }
 
         if((gfx_palette[CLOUD_COLOR] & 0x1F) > (gfx_palette[BG_COLOR] & 0x1F))
-            draw_moon(&game->moon);
+            draw_moon();
     }
 
     for(i = 0; i < NUM_CLOUDS; i++) {
-        draw_cloud(&game->clouds[i]);
+        draw_cloud(&game.clouds[i]);
     }
 
     for(i = 0; i < NUM_OBSTACLES; i++) {
-        draw_obstacle(&game->obstacles[i], game->distance, game->frame);
+        draw_obstacle(&game.obstacles[i]);
     }
 
-    draw_dino(&game->dino, game->frame);
+    draw_dino();
 
-    draw_high_score(game->high_score);
-    if(game->distance_overrun) {
+    draw_high_score(game.high_score);
+    if(game.distance_overrun) {
         draw_distance_meter(0);
     } else {
-        draw_distance_meter(game->score);
+        draw_distance_meter(game.score);
     }
 
 #if SHOW_FPS
@@ -107,27 +107,27 @@ void draw_horizon(uint24_t distance) {
     }
 }
 
-void draw_dino(const dino_t *dino, uint24_t frame) {
+void draw_dino() {
 #if SHOW_BOXES
     uint8_t i;
 #endif
     gfx_rletsprite_t *sprite;
-    uint8_t base_y = dino->y.parts.iPart;
+    uint8_t base_y = game.dino.y.parts.iPart;
     uint8_t y;
     uint24_t x = DINO_OFFSET_X;
 
-    if(!dino->alive) {
+    if(!game.dino.alive) {
         x = DINO_OFFSET_X + 2;
         sprite = dino_dead;
         base_y -= 2;
-    } else if(!dino->on_ground) {
+    } else if(!game.dino.on_ground) {
         sprite = dino_midair;
-    } else if((frame & (2 * DINO_STEP_SPEED)) > DINO_STEP_SPEED) {
+    } else if((game.frame & (2 * DINO_STEP_SPEED)) > DINO_STEP_SPEED) {
         /* Dino is on left foot */
-        sprite = dino->ducking ? dino_duck_left : dino_left;
+        sprite = game.dino.ducking ? dino_duck_left : dino_left;
     } else {
         /* Dino is on right foot */
-        sprite = dino->ducking ? dino_duck_right : dino_right;
+        sprite = game.dino.ducking ? dino_duck_right : dino_right;
     }
 
     y = base_y + 2 - sprite->height;
@@ -136,7 +136,7 @@ void draw_dino(const dino_t *dino, uint24_t frame) {
 #if SHOW_BOXES
     gfx_SetColor(DINO_BOX_COLOR);
 
-    if(dino->ducking) {
+    if(game.dino.ducking) {
         gfx_Rectangle(DINO_OFFSET_X + dino_box_ducking.x1, y + dino_box_ducking.y1,
                       dino_box_ducking.x2 - dino_box_ducking.x1,
                       dino_box_ducking.y2 - dino_box_ducking.y1);
@@ -149,7 +149,7 @@ void draw_dino(const dino_t *dino, uint24_t frame) {
 #endif
 }
 
-void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame) {
+void draw_obstacle(const obstacle_t *obstacle) {
 #if SHOW_BOXES
     uint8_t i;
 #endif
@@ -157,7 +157,7 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
     uint8_t y;
     gfx_rletsprite_t *sprite;
 
-    x = obstacle->x - distance + DINO_OFFSET_X;
+    x = obstacle->x - game.distance + DINO_OFFSET_X;
 
     if(x > LCD_WIDTH) return;
 
@@ -171,7 +171,7 @@ void draw_obstacle(const obstacle_t *obstacle, uint24_t distance, uint24_t frame
             sprite = large_cacti[obstacle->size - 1];
             break;
         case PTERODACTYL:
-            if((frame & (2 * PTERODACTYL_FLAP_SPEED)) > PTERODACTYL_FLAP_SPEED) {
+            if((game.frame & (2 * PTERODACTYL_FLAP_SPEED)) > PTERODACTYL_FLAP_SPEED) {
                 sprite = bird_0;
                 y += PTERODACTYL_0_Y_OFFSET;
             }
@@ -205,9 +205,9 @@ void draw_cloud(const cloud_t *cloud) {
     gfx_RLETSprite(cloud_sprite, cloud->x, cloud->y);
 }
 
-void draw_moon(const moon_t *moon) {
-    if(moon->phase == NUM_MOONS - 1) return;
-    gfx_RLETSprite(moons[moon->phase], moon->x, MOON_Y);
+void draw_moon(void) {
+    if(game.moon.phase == NUM_MOONS - 1) return;
+    gfx_RLETSprite(moons[game.moon.phase], game.moon.x, MOON_Y);
 }
 
 void draw_star(const star_t *star) {

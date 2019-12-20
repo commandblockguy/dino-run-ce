@@ -7,23 +7,18 @@
 
 #if USE_USB
 
-usb_device_t controller_dev;
-uint8_t steam_interface;
-hid_state_t hids[MAX_HID_DEVICES];
-
 static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
                                     usb_callback_data_t *callback_data);
-static hid_state_t *get_hid_slot(game_t *game);
+static hid_state_t *get_hid_slot(void);
 
 static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
                                     usb_callback_data_t *callback_data) {
-    game_t *game = callback_data;
     switch(event) {
         case USB_DEVICE_CONNECTED_EVENT: {
             usb_device_t dev = event_data;
             int8_t interface;
             dbg_sprintf(dbgout, "got device\n");
-            controller_dev = dev;
+            game.usb.controller_dev = dev;
             usb_ResetDevice(dev);
             usb_WaitForEvents();
             interface = sc_GetInterface(dev);
@@ -31,13 +26,13 @@ static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
                 uint8_t conf_desc[256];
                 size_t len;
                 dbg_sprintf(dbgout, "got interface %u\n", interface);
-                steam_interface = interface;
+                game.usb.steam_interface = interface;
                 len = usb_GetConfigurationDescriptorTotalLength(dev, 0);
                 usb_GetDescriptor(dev, USB_CONFIGURATION_DESCRIPTOR, 0,
                                   &conf_desc, 256, NULL);
                 usb_SetConfiguration(dev, (usb_configuration_descriptor_t*)&conf_desc, len);
             } else {
-                hid_state_t *hid = get_hid_slot(game);
+                hid_state_t *hid = get_hid_slot();
                 if(hid) {
                     uint8_t i;
                     union conf_desc {
@@ -60,7 +55,7 @@ static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
                         if(!error) {
                             dbg_sprintf(dbgout, "got interface %u\n", i);
                             hid_SetIdleTime(hid, 0);
-                            hid = get_hid_slot(game);
+                            hid = get_hid_slot();
                             if(!hid) {
                                 dbg_sprintf(dbgout, "Ran out of HID slots\n");
                                 return USB_SUCCESS;
@@ -84,34 +79,34 @@ static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
     return USB_SUCCESS;
 }
 
-void start_usb(game_t *game) {
+void start_usb(void) {
     dbg_sprintf(dbgout, "initting usb\n");
-    usb_Init(handle_usb_event, game, NULL, USB_DEFAULT_INIT_FLAGS);
+    usb_Init(handle_usb_event, NULL, NULL, USB_DEFAULT_INIT_FLAGS);
 }
 
-static hid_state_t *get_hid_slot(game_t *game) {
+static hid_state_t *get_hid_slot(void) {
     uint8_t i;
     for(i = 0; i < MAX_HID_DEVICES; i++) {
-        if(!hids[i].active) return &hids[i];
+        if(!game.usb.hids[i].active) return &game.usb.hids[i];
     }
     return NULL;
 }
 
-bool any_hid_held(game_t *game, uint8_t key_code) {
+bool any_hid_held(uint8_t key_code) {
     uint8_t i;
     for(i = 0; i < MAX_HID_DEVICES; i++) {
-        if(hids[i].active) {
-            if(hid_KbdIsKeyDown(&hids[i], key_code)) return true;
+        if(game.usb.hids[i].active) {
+            if(hid_KbdIsKeyDown(&game.usb.hids[i], key_code)) return true;
         }
     }
     return false;
 }
 
-bool any_hid_mouse_held(game_t *game, uint8_t button) {
+bool any_hid_mouse_held(uint8_t button) {
     uint8_t i;
     for(i = 0; i < MAX_HID_DEVICES; i++) {
-        if(hids[i].active) {
-            if(hid_MouseIsButtonDown(&hids[i], button)) return true;
+        if(game.usb.hids[i].active) {
+            if(hid_MouseIsButtonDown(&game.usb.hids[i], button)) return true;
         }
     }
     return false;

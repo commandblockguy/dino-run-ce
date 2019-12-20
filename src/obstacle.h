@@ -50,12 +50,12 @@ typedef struct Obstacle {
 
 /* Add a new obstacle at location new. */
 /* last should be the obstacle furthest from the dino (last to be added) */
-void add_obstacle(obstacle_t *new, ifix_t dino_velocity);
+void add_obstacle(obstacle_t *new);
 
-void update_obstacles(obstacle_t *obstacles, dino_t *dino, uint24_t distance);
+void update_obstacles(void);
 
-void update_obstacle(obstacle_t *obstacle, uint24_t distance, ifix_t dino_velocity);
+void update_obstacle(obstacle_t *obstacle);
 
-void init_obstacles(obstacle_t *obstacles);
+void init_obstacles(void);
 
 #endif //DINO_OBSTACLE_H

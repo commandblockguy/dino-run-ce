@@ -21,6 +21,8 @@
 #include "score.h"
 #include "night.h"
 
+game_t game;
+
 void reset_timer(void) {
     timer_Control = TIMER1_DISABLE;
     timer_1_Counter = 0;
@@ -28,7 +30,7 @@ void reset_timer(void) {
     timer_Control = TIMER1_ENABLE | TIMER1_32K | TIMER1_NOINT | TIMER1_UP;
 }
 
-bool play(game_t *game) {
+bool play(void) {
     while(true) {
         uint8_t i;
 #if USE_USB
@@ -39,11 +41,11 @@ bool play(game_t *game) {
 
         if(kb_IsDown(kb_KeyClear)) return false;
 
-        game->dino.ducking = kb_IsDown(kb_KeyDown) && game->dino.on_ground;
-        game->dino.dropping = kb_IsDown(kb_KeyDown) && !game->dino.on_ground;
-        game->dino.jumping = kb_IsDown(kb_KeyUp)
+        game.dino.ducking = kb_IsDown(kb_KeyDown) && game.dino.on_ground;
+        game.dino.dropping = kb_IsDown(kb_KeyDown) && !game.dino.on_ground;
+        game.dino.jumping = kb_IsDown(kb_KeyUp)
 #if USE_USB
-        || any_hid_mouse_held(game, HID_MOUSE_LEFT)
+        || any_hid_mouse_held(HID_MOUSE_LEFT)
 #endif
         ;
 
@@ -52,24 +54,24 @@ bool play(game_t *game) {
         if(kb_IsDown(kb_Key3)) invert_palette(true);
         if(kb_IsDown(kb_Key4)) invert_palette(false);
 
-        game->distance += game->dino.velocity_x.parts.iPart;
-        if(game->distance > game->distance_to_score) {
-            game->score++;
-            game->distance_to_score += SCORE_DIVISOR;
-            if(game->score > DISTANCE_METER_MAX) {
-                game->distance_overrun = true;
+        game.distance += game.dino.velocity_x.parts.iPart;
+        if(game.distance > game.distance_to_score) {
+            game.score++;
+            game.distance_to_score += SCORE_DIVISOR;
+            if(game.score > DISTANCE_METER_MAX) {
+                game.distance_overrun = true;
             }
         }
 
-        update_dino(&game->dino);
+        update_dino();
 
-        update_obstacles(game->obstacles, &game->dino, game->distance);
+        update_obstacles();
 
-        update_clouds(game->clouds, game->distance, &game->distance_to_cloud_movement);
+        update_clouds();
 
-        update_day_stage(game);
+        update_day_stage();
 
-        draw(game);
+        draw();
 
         while(!(timer_IntStatus & TIMER1_MATCH1)) {
             kb_Scan();
@@ -77,9 +79,9 @@ bool play(game_t *game) {
         }
         reset_timer();
 
-        game->frame++;
+        game.frame++;
 
-        if(!game->dino.alive) return true;
+        if(!game.dino.alive) return true;
     }
 }
 
@@ -96,8 +98,6 @@ bool game_over() {
 }
 
 void main(void) {
-    game_t game;
-
 #if USE_USB
     start_usb(&game);
 #endif
@@ -109,7 +109,11 @@ void main(void) {
     while(true) {
         bool quit;
 
-        memset(&game, 0, sizeof(game));
+        memset(&game, 0, sizeof(game)
+#if USE_USB
+            - sizeof(game.usb)
+#endif
+        );
         reset_timer();
         game.dino.alive = true;
         game.dino.on_ground = true;
@@ -121,10 +125,10 @@ void main(void) {
 
         set_dynamic_palette(true);
 
-        init_obstacles(game.obstacles);
-        init_clouds(game.clouds);
+        init_obstacles();
+        init_clouds();
 
-        quit = !play(&game);
+        quit = !play();
         set_score(game.score);
         if(quit) {
             /* Player pressed clear */
