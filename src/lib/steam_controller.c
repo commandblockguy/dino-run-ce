@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <debug.h>
+#include <graphx.h>
 #include "steam_controller.h"
 
 #define VENDOR_STEAM  0x28DE
@@ -51,17 +52,15 @@ void sc_PlayTone(usb_device_t dev, uint8_t interface,
     struct DataPacket *data = malloc(sizeof(sc_default_data));
     usb_control_setup_t setup = {0x21, 9, 0x300, 0, 64};
 
+    if(!dev) return;
+
     if(data) {
-        dbg_sprintf(dbgout, "dev: %p\n", dev);
-        dbg_sprintf(dbgout, "using %u %u %u\n", haptic, pulse_duration, repeat_count);
+        dbg_sprintf(dbgout, "tone %u %u %u\n", haptic, pulse_duration, repeat_count);
         setup.wIndex = interface;
         memcpy(data, &sc_default_data, sizeof(sc_default_data));
         data->haptic = haptic;
         data->pulse_high = data->pulse_low = pulse_duration;
         data->repeat_count = repeat_count;
-
-        dbg_sprintf(dbgout, "data: %p, setup:%p\n", data, &setup);
-        dbg_Debugger();
 
         usb_ScheduleDefaultControlTransfer(dev, &setup, data, tone_callback, data);
     } else {

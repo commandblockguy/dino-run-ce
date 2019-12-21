@@ -13,6 +13,7 @@
 #include "util.h"
 #include "score.h"
 #include "night.h"
+#include "sound.h"
 
 #if USE_USB
 #include <usbdrvce.h>
@@ -24,10 +25,10 @@
 game_t game;
 
 void reset_timer(void) {
-    timer_Control = TIMER1_DISABLE;
+    timer_Control &= ~TIMER1_ENABLE;
     timer_1_Counter = 0;
     timer_1_MatchValue_1 = FRAME_TIME;
-    timer_Control = TIMER1_ENABLE | TIMER1_32K | TIMER1_NOINT | TIMER1_UP;
+    timer_Control |= TIMER1_ENABLE;
 }
 
 bool play(void) {
@@ -36,6 +37,9 @@ bool play(void) {
         bool jump_pressed, duck_pressed;
 #if USE_USB
         usb_HandleEvents();
+#endif
+#if USE_SOUND
+        update_sound_player(&game.sound_player);
 #endif
 
         kb_Scan();
@@ -66,6 +70,10 @@ bool play(void) {
                 game.distance_overrun = true;
             }
         }
+        if(game.score >= game.next_beep_score) {
+            game.next_beep_score += 100;
+            play_sound(&game.sound_player, &sounds[SOUND_ACHIEVEMENT]);
+        }
 
         update_dino();
 
@@ -78,9 +86,14 @@ bool play(void) {
         draw();
 
         while(!(timer_IntStatus & TIMER1_MATCH1)) {
+            timer_IntAcknowledge = TIMER1_MATCH1;
             kb_Scan();
             if(kb_IsDown(kb_KeyClear)) break;
+#if USE_SOUND
+            update_sound_player(&game.sound_player);
+#endif
 #if USE_USB
+            usb_HandleEvents();
             if(any_hid_held(KEY_ESC)) break;
 #endif
         }
@@ -92,8 +105,11 @@ bool play(void) {
     }
 }
 
-bool game_over() {
+bool game_over(void) {
     draw_game_over();
+#if USE_SOUND
+    play_sound(&game.sound_player, &sounds[SOUND_DEATH]);
+#endif
 
     while(true) {
         kb_Scan();
@@ -101,7 +117,11 @@ bool game_over() {
         if(kb_IsDown(kb_KeyClear)) return true;
         if(kb_IsDown(kb_KeyEnter)) return false;
         if(kb_IsDown(kb_Key2nd)) return false;
+#if USE_SOUND
+      update_sound_player(&game.sound_player);
+#endif
 #if USE_USB
+        usb_HandleEvents();
         if(any_hid_held(KEY_ESC)) return true;
         if(any_hid_held(KEY_ENTER)) return false;
         if(any_hid_mouse_held(HID_MOUSE_LEFT)) return false;
@@ -122,6 +142,9 @@ void main(void) {
 
     ti_CloseAll();
 
+    timer_Control = TIMER1_ENABLE | TIMER1_32K | TIMER1_NOINT | TIMER1_UP |
+                    TIMER2_ENABLE | TIMER2_32K | TIMER2_NOINT | TIMER2_UP;
+
     init_graphics();
 
     while(true) {
@@ -140,11 +163,15 @@ void main(void) {
         game.distance_to_score = SCORE_DIVISOR;
         game.high_score = get_score();
         game.distance_to_time_change = NIGHT_CYCLE_INTERVAL;
+        game.next_beep_score = 100;
 
         set_dynamic_palette(true);
 
         init_obstacles();
         init_clouds();
+#if USE_SOUND
+        play_sound(&game.sound_player, &sounds[SOUND_JUMP]);
+#endif
 
         quit = !play();
         set_score(game.score);

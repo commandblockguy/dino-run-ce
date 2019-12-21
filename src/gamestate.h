@@ -8,12 +8,14 @@
 #include "config.h"
 #include "hid/hid.h"
 #include "night.h"
+#include "sound.h"
 
 typedef struct Game {
     uint24_t frame;
     uint24_t distance;
     uint24_t score;
     uint24_t distance_to_score;
+    uint24_t next_beep_score;
     bool distance_overrun;
     dino_t dino;
     cloud_t clouds[NUM_CLOUDS];
@@ -25,10 +27,13 @@ typedef struct Game {
     moon_t moon;
     star_t stars[MAX_NUM_STARS];
     uint24_t star_movement_frame;
+#if USE_SOUND
+    sound_player_t sound_player;
+#endif
 #if USE_USB
     struct {
         usb_device_t controller_dev;
-        uint8_t steam_interface;
+        uint8_t controller_interface;
         hid_state_t hids[MAX_HID_DEVICES];
     } usb;
 #endif

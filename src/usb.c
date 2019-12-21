@@ -16,6 +16,7 @@ static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
     switch(event) {
         case USB_DEVICE_CONNECTED_EVENT: {
             usb_device_t dev = event_data;
+            hid_state_t *hid = get_hid_slot();
             int8_t interface;
             dbg_sprintf(dbgout, "got device\n");
             game.usb.controller_dev = dev;
@@ -25,48 +26,48 @@ static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
             if(interface != -1) {
                 uint8_t conf_desc[256];
                 size_t len;
-                dbg_sprintf(dbgout, "got interface %u\n", interface);
-                game.usb.steam_interface = interface;
+                dbg_sprintf(dbgout, "got steam interface %u\n", interface);
+                game.usb.controller_interface = interface;
                 len = usb_GetConfigurationDescriptorTotalLength(dev, 0);
                 usb_GetDescriptor(dev, USB_CONFIGURATION_DESCRIPTOR, 0,
                                   &conf_desc, 256, NULL);
                 usb_SetConfiguration(dev, (usb_configuration_descriptor_t*)&conf_desc, len);
-            } else {
-                hid_state_t *hid = get_hid_slot();
-                if(hid) {
-                    uint8_t i;
-                    union conf_desc {
-                        uint8_t bytes[256];
-                        usb_configuration_descriptor_t conf;
-                        usb_descriptor_t desc;
-                    } conf_desc;
+            }
 
-                    size_t len;
+            if(hid) {
+                uint8_t i;
+                union conf_desc {
+                    uint8_t bytes[256];
+                    usb_configuration_descriptor_t conf;
+                    usb_descriptor_t desc;
+                } conf_desc;
 
-                    len = usb_GetConfigurationDescriptorTotalLength(dev, 0);
-                    usb_GetDescriptor(dev, USB_CONFIGURATION_DESCRIPTOR, 0,
-                                      &conf_desc, 256, NULL);
-                    usb_SetConfiguration(dev, (usb_configuration_descriptor_t*)&conf_desc, len);
+                size_t len;
 
-                    for(i = 0; i < conf_desc.conf.bNumInterfaces; i++) {
-                        hid_error_t error;
+                len = usb_GetConfigurationDescriptorTotalLength(dev, 0);
+                usb_GetDescriptor(dev, USB_CONFIGURATION_DESCRIPTOR, 0,
+                                  &conf_desc, 256, NULL);
+                usb_SetConfiguration(dev, (usb_configuration_descriptor_t*)&conf_desc, len);
 
-                        error = hid_Init(hid, dev, i);
-                        if(!error) {
-                            dbg_sprintf(dbgout, "got interface %u\n", i);
-                            hid_SetIdleTime(hid, 0);
-                            hid = get_hid_slot();
-                            if(!hid) {
-                                dbg_sprintf(dbgout, "Ran out of HID slots\n");
-                                return USB_SUCCESS;
-                            }
+                for(i = 0; i < conf_desc.conf.bNumInterfaces; i++) {
+                    hid_error_t error;
+
+                    error = hid_Init(hid, dev, i);
+                    if(!error) {
+                        dbg_sprintf(dbgout, "got interface %u\n", i);
+                        hid_SetIdleTime(hid, 0);
+                        hid = get_hid_slot();
+                        if(!hid) {
+                            dbg_sprintf(dbgout, "Ran out of HID slots\n");
+                            return USB_SUCCESS;
                         }
                     }
-                } else {
-                    dbg_sprintf(dbgout, "No HID slots available\n");
-                    return USB_IGNORE;
                 }
+            } else {
+                dbg_sprintf(dbgout, "No HID slots available\n");
+                return USB_IGNORE;
             }
+
             break;
         }
         case USB_DEVICE_DISCONNECTED_EVENT: {

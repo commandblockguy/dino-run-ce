@@ -23,7 +23,7 @@ int8_t sc_GetInterface(usb_device_t dev);
  * @param dev USB device
  * @param interface Interface from \c sc_GetInterface
  * @param haptic Which haptic feedback motor to use
- * @param pulse_duration Duration of each pulse. Use \c scFrequencyToDuration
+ * @param pulse_duration Duration of each pulse. Use \c sc_FrequencyToDuration
  * @param repeat_count Number of times to repeat. Use \c sc_TimeToRepeatCount
  */
 void sc_PlayTone(usb_device_t dev, uint8_t interface,
