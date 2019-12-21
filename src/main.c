@@ -52,6 +52,7 @@ bool play(void) {
                        any_hid_mouse_held(HID_MOUSE_RIGHT);
         jump_pressed = kb_IsDown(kb_KeyUp) ||
                        any_hid_held(KEY_UP) ||
+                       any_hid_held(KEY_SPACE) ||
                        any_hid_mouse_held(HID_MOUSE_LEFT);
 #else
         duck_pressed = kb_IsDown(kb_KeyDown);
