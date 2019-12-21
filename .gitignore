@@ -5,6 +5,7 @@ src/gfx/convpng.log
 bin/
 cmake-build-debug/
 /*.png
+!iconc.png
 obj/
 orig.js
 dino_run.zip
