@@ -63,8 +63,6 @@ release:
 	cp -r src iconc.png makefile dino_run/source
 
 	make gfx
-	make usb
-	cp bin/DINO.8xp dino_run/DINO-USB.8xp
 	make no_usb
 	cp bin/DINO.8xp dino_run/DINO.8xp
 

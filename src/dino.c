@@ -11,7 +11,9 @@ void dino_start_jump(void) {
     game.dino.velocity_y.combined = INT_TO_FIXED_POINT(INITIAL_JUMP_VELOCITY) - game.dino.velocity_x.combined / 10;
     game.dino.on_ground = false;
 
+#if USE_SOUND
     play_sound(&game.sound_player, &sounds[SOUND_JUMP]);
+#endif
 }
 
 void dino_end_jump(void) {

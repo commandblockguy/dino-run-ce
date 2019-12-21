@@ -73,7 +73,9 @@ bool play(void) {
         }
         if(game.score >= game.next_beep_score) {
             game.next_beep_score += 100;
+#if USE_SOUND
             play_sound(&game.sound_player, &sounds[SOUND_ACHIEVEMENT]);
+#endif
         }
 
         update_dino();

@@ -13,19 +13,18 @@ To avoid having to do this, either update your OS or use a shell such as [Cesium
 ### Controls:
 UP to jump, DOWN to duck / fall, enter/2nd to restart, clear to exit.
 
-###USB:
-For compatibility with USB devices, use DINO_USB.8xp instead of DINO.8xp.
-You will also need to send the [USB libraries](https://github.com/CE-Programming/toolchain/tree/usbdrvce).
-A (probably outdated) prebuilt version can be found [here](http://commandblockguy.xyz/downloads/usblibs.8xg).
-Please note that USB support is still experimental and not recommended.
-You will also need a USB Mini B OTG adapter to use most devices.
-Dino Run is compatible with HID boot devices (up/left click to jump, down/right click to jump) and the Steam controller (for rumble sounds).
-
-
 ### Building from source:
 The most up-to-date version of the source code may be found [on GitHub](https://github.com/commandblockguy/dino-run-ce).
 To build, you will need to install the [CE toolchain](https://github.com/CE-Programming/toolchain/releases).
 Run `make` in this directory to produce a binary in `bin/`.
+
+###USB:
+Please note that USB support is still experimental and not recommended.
+To build with USB support, use `make usb` or set USE_USB to 1 in `config.h`.
+You will also need to send the [USB libraries](https://github.com/CE-Programming/toolchain/tree/usbdrvce).
+A (probably outdated) prebuilt version can be found [here](http://commandblockguy.xyz/downloads/usblibs.8xg).
+You will also need a USB Mini B OTG adapter to use most devices.
+Dino Run is compatible with HID boot devices (up/left click to jump, down/right click to jump) and the Steam controller (for rumble sounds).
 
 ### Contact:
 Questions / comments?

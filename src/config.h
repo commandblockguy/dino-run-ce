@@ -13,13 +13,13 @@
 #define FRAME_TIME (ONE_SECOND / FPS)
 
 #ifndef SHOW_FPS
-#define SHOW_FPS 1
+#define SHOW_FPS 0
 #endif SHOW_FPS
 #ifndef SHOW_BOXES
 #define SHOW_BOXES 0
 #endif
 #ifndef USE_CHEATS
-#define USE_CHEATS 1
+#define USE_CHEATS 0
 #endif
 
 #define GRAVITY 0.6
