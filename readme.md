@@ -2,6 +2,8 @@
 
 A clone of Google Chrome's dinosaur game (from the no internet screen) for the TI-84 Plus CE graphing calculator.
 
+![Preview](https://cdn.discordapp.com/attachments/466808269789200387/661356334322548755/dino.png)
+
 ### Installation:
 Send DINO.8xp to the calculator using TI-Connect CE (for Windows and Mac) or TiLP (for Linux).
 Also send [the C libraries](https://github.com/CE-Programming/libraries/releases) to the calculator.
@@ -18,7 +20,7 @@ The most up-to-date version of the source code may be found [on GitHub](https://
 To build, you will need to install the [CE toolchain](https://github.com/CE-Programming/toolchain/releases).
 Run `make` in this directory to produce a binary in `bin/`.
 
-###USB:
+### USB:
 Please note that USB support is still experimental and not recommended.
 To build with USB support, use `make usb` or set USE_USB to 1 in `config.h`.
 You will also need to send the [USB libraries](https://github.com/CE-Programming/toolchain/tree/usbdrvce).
