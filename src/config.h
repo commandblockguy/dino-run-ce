@@ -12,6 +12,11 @@
 #define ONE_SECOND 32768
 #define FRAME_TIME (ONE_SECOND / FPS)
 
+#define TEXT_FADE_DELAY (ONE_SECOND * 2)
+#define TEXT_FADE_TIME (ONE_SECOND * 2)
+#define TEXT_FADE_FINAL_COLOR 128
+#define DO_FADE_TEXT 1
+
 #ifndef SHOW_FPS
 #define SHOW_FPS 0
 #endif
@@ -50,10 +55,10 @@
 #define COMMIT (N/A)
 #endif
 #ifndef DIFF_STATUS
-#define DIFF_STATUS (N/A)
+#define DIFF_STATUS 1
 #endif
 #ifndef VERSION
-#define VERSION 1.0
+#define VERSION 1.1
 #endif
 
 

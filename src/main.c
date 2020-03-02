@@ -109,12 +109,27 @@ bool play(void) {
 }
 
 bool game_over(void) {
+    uint32_t initial_time = timer_1_Counter;
     draw_game_over();
 #if USE_SOUND
     play_sound(&game.sound_player, &sounds[SOUND_DEATH]);
 #endif
 
     while(true) {
+#if DO_FADE_TEXT
+        uint24_t capped_counter;
+        if(timer_1_Counter - initial_time < TEXT_FADE_DELAY) {
+            capped_counter = 0;
+        } else if(timer_1_Counter - initial_time > TEXT_FADE_TIME - 1 + TEXT_FADE_DELAY) {
+            capped_counter = TEXT_FADE_TIME - 1;
+        } else {
+            capped_counter =  timer_1_Counter - initial_time - TEXT_FADE_DELAY;
+        }
+
+        /* Fade in the text */
+        gfx_palette[FADE_TEXT] = gfx_Darken(0xFFFF, capped_counter / (TEXT_FADE_TIME / TEXT_FADE_FINAL_COLOR));
+#endif
+
         kb_Scan();
 
         if(kb_IsDown(kb_KeyClear)) return true;
@@ -169,6 +184,7 @@ void main(void) {
         game.next_beep_score = 100;
 
         set_dynamic_palette(true);
+        gfx_palette[FADE_TEXT] = 0;
 
         init_obstacles();
         init_clouds();

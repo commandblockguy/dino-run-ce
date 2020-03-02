@@ -244,11 +244,25 @@ void fps_counter(void) {
 
 void draw_game_over(void) {
     const char game_over_text[] = "GAMEOVER";
+    const char version_string[] = xstr(VERSION) "-" xstr(COMMIT)
+#if DIFF_STATUS
+    "*"
+#endif
+#ifdef __clang__
+    "L"
+#elif __ZILOG__
+    "Z"
+#endif
+#if USE_USB
+    "U"
+#endif
+;
     const uint24_t base_x = (LCD_WIDTH - GAME_OVER_TOTAL_WIDTH) / 2;
     uint8_t i;
     gfx_SetDrawScreen();
 
     fontlib_SetColors(FG_COLOR, BG_COLOR);
+    gfx_palette[FADE_TEXT] = 0x0000;
 
     for(i = 0; i < strlen(game_over_text); i++) {
         uint24_t x = base_x + (GAME_OVER_TEXT_WIDTH + GAME_OVER_TEXT_SPACING) * i;
@@ -258,6 +272,11 @@ void draw_game_over(void) {
     }
 
     gfx_RLETSprite(restart, (LCD_WIDTH - restart_width) / 2, RESTART_BUTTON_Y);
+
+    gfx_SetTextFGColor(FADE_TEXT);
+    gfx_PrintStringXY("Dino Run CE by commandblockguy", 3, LCD_HEIGHT - 18);
+    gfx_PrintStringXY("https://discord.gg/DZbmraw", 3, LCD_HEIGHT - 10);
+    gfx_PrintStringXY(version_string, LCD_WIDTH - gfx_GetStringWidth(version_string) - 3, 2);
 
     gfx_SetDrawBuffer();
 }
@@ -277,9 +296,9 @@ void invert_palette(bool day) {
     uint16_t *target_palette;
 
     if(day) {
-        target_palette = gfx_pal;
+        target_palette = (uint16_t*)gfx_pal;
     } else {
-        target_palette = night_pal;
+        target_palette = (uint16_t*)night_pal;
     }
 
     for(i = DYNAMIC_PALETTE_START; i < DYNAMIC_PALETTE_SIZE + DYNAMIC_PALETTE_START; i++) {

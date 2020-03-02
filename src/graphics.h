@@ -38,6 +38,7 @@ enum {
     DINO_BOX_COLOR = 7,
     BLACK = 8,
     WHITE = 9,
+    FADE_TEXT = 10
 };
 
 void init_graphics(void);
