@@ -28,7 +28,17 @@
 #define DYNAMIC_PALETTE_SIZE 4
 #define DYNAMIC_PALETTE_START 1
 
-#define WHITE 9
+enum {
+    BG_COLOR = 1,
+    FG_COLOR = 2,
+    CLOUD_COLOR = 3,
+    HS_COLOR = 4,
+    STAR_COLOR = 5,
+    OBSTACLE_BOX_COLOR = 6,
+    DINO_BOX_COLOR = 7,
+    BLACK = 8,
+    WHITE = 9,
+};
 
 void init_graphics(void);
 

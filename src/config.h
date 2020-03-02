@@ -14,7 +14,7 @@
 
 #ifndef SHOW_FPS
 #define SHOW_FPS 0
-#endif SHOW_FPS
+#endif
 #ifndef SHOW_BOXES
 #define SHOW_BOXES 0
 #endif

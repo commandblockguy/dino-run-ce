@@ -1,11 +1,11 @@
 #include <debug.h>
 #include "config.h"
+
+#if USE_USB
 #include "usb.h"
 #include "gamestate.h"
 #include "lib/steam_controller.h"
 #include "hid/hid.h"
-
-#if USE_USB
 
 static usb_error_t handle_usb_event(usb_event_t event, void *event_data,
                                     usb_callback_data_t *callback_data);

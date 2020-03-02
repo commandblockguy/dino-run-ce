@@ -14,10 +14,16 @@ DESCRIPTION ?= "Dino Run CE"
 # Other Options (Advanced)
 # ----------------------------
 
+USING_LLVM := $(shell grep clang $(CEDEV)/include/.makefile; echo $$?)
+
 GIT_COMMIT := $(shell git rev-parse --short HEAD)
 GIT_DIFF_STATUS := $(shell git diff-index --quiet HEAD; echo $$?)
 
+ifeq ($(USING_LLVM), 1)
 EXTRA_CFLAGS        += COMMIT=$(GIT_COMMIT) DIFF_STATUS=$(GIT_DIFF_STATUS)
+else
+EXTRA_CFLAGS        += -DCOMMIT=$(GIT_COMMIT) -DDIFF_STATUS=$(GIT_DIFF_STATUS)
+endif
 #USE_FLASH_FUNCTIONS ?= YES|NO
 #OUTPUT_MAP          ?= YES|NO
 #ARCHIVED            ?= YES|NO

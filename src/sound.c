@@ -1,9 +1,9 @@
 #include <debug.h>
 #include "sound.h"
-#include "lib/steam_controller.h"
 #include "gamestate.h"
 
 #if USE_SOUND
+#include "lib/steam_controller.h"
 
 void play_sound(sound_player_t *player, const sound_t *sound) {
     player->sound = sound;

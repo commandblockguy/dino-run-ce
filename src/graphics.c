@@ -12,7 +12,6 @@
 #include "util.h"
 #include "clouds.h"
 #include "physics.h"
-#include "gfx/night.h"
 
 void init_graphics(void) {
     gfx_Begin();
@@ -264,11 +263,11 @@ void draw_game_over(void) {
 }
 
 void set_dynamic_palette(bool day) {
-    uint16_t *palette;
+    uint8_t *palette;
     if(day) {
-        palette = &gfx_pal[DYNAMIC_PALETTE_START];
+        palette = &gfx_pal[DYNAMIC_PALETTE_START * 2];
     } else {
-        palette = &night_pal[DYNAMIC_PALETTE_START];
+        palette = &night_pal[DYNAMIC_PALETTE_START * 2];
     }
     gfx_SetPalette(palette, DYNAMIC_PALETTE_SIZE * 2, DYNAMIC_PALETTE_START);
 }
@@ -284,8 +283,8 @@ void invert_palette(bool day) {
     }
 
     for(i = DYNAMIC_PALETTE_START; i < DYNAMIC_PALETTE_SIZE + DYNAMIC_PALETTE_START; i++) {
-        uint8_t current = gfx_palette[i] & 0x1F;
-        uint8_t target = target_palette[i] & 0x1F;
+        uint16_t current = gfx_palette[i] & 0x1F;
+        uint16_t target = target_palette[i] & 0x1F;
         uint8_t new;
 
         if(target < current) new = current - 1;
