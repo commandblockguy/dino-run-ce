@@ -25,10 +25,10 @@ void init_graphics(void) {
 #if LETTERBOX
     gfx_SetColor(BLACK);
     gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
-    gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
+    gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_HEIGHT - BOTTOM_Y);
     gfx_SetDrawBuffer();
     gfx_FillRectangle_NoClip(0, 0, LCD_WIDTH, TOP_Y);
-    gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_WIDTH - BOTTOM_Y);
+    gfx_FillRectangle_NoClip(0, BOTTOM_Y, LCD_WIDTH, LCD_HEIGHT - BOTTOM_Y);
 #endif
 
     gfx_SetDrawBuffer();
