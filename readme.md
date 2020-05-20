@@ -1,3 +1,5 @@
+*Does not run on OS 5.5.* It's not possible for me to fix this, so don't update your calculator's OS.
+
 # Dinosaur Run CE
 
 A clone of Google Chrome's dinosaur game (from the no internet screen) for the TI-84 Plus CE graphing calculator.
