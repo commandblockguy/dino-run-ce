@@ -1,5 +1,3 @@
-*Does not run on OS 5.5.* It's not possible for me to fix this, so don't update your calculator's OS.
-
 # Dinosaur Run CE
 
 A clone of Google Chrome's dinosaur game (from the no internet screen) for the TI-84 Plus CE graphing calculator.
@@ -13,6 +11,10 @@ To run, select DINO from the prgm menu and press enter.
 
 On older calculator OSes, you may need to open the catalog and select the Asm( token before running the program, so that the text `Asm(prgmDINO` is displayed.
 To avoid having to do this, either update your OS or use a shell such as [Cesium](https://github.com/mateoconlechuga/cesium/releases). 
+
+On OS 5.5, you will need to use [arTIfiCE](https://yvantt.github.io/arTIfiCE/) to run native programs.
+
+I've made a [video tutorial](https://www.youtube.com/watch?v=_e8pgw9d7S4) for this process.
 
 ### Controls:
 UP to jump, DOWN to duck / fall, enter/2nd to restart, clear to exit.
