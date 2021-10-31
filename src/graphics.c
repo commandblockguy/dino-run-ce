@@ -248,11 +248,6 @@ void draw_game_over(void) {
 #if DIFF_STATUS
     "*"
 #endif
-#ifdef __clang__
-    "L"
-#elif __ZILOG__
-    "Z"
-#endif
 #if USE_USB
     "U"
 #endif

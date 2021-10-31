@@ -147,7 +147,7 @@ bool game_over(void) {
     }
 }
 
-void main(void) {
+int main(void) {
 #if USE_USB
     start_usb(&game);
 #endif
@@ -157,8 +157,6 @@ void main(void) {
     dbg_sprintf(dbgout, "Git commit %s, changed: %s\n",
                 xstr(COMMIT), xstr(DIFF_STATUS));
     dbg_sprintf(dbgout, "Built %s %s\n", __TIME__, __DATE__);
-
-    ti_CloseAll();
 
     timer_Control = TIMER1_ENABLE | TIMER1_32K | TIMER1_NOINT | TIMER1_UP |
                     TIMER2_ENABLE | TIMER2_32K | TIMER2_NOINT | TIMER2_UP;
@@ -209,4 +207,5 @@ void main(void) {
 #if USE_USB
     usb_Cleanup();
 #endif
+    return 0;
 }

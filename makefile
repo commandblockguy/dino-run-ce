@@ -5,36 +5,21 @@
 # Set COMPRESSED to "YES" to create a compressed program
 # ----------------------------
 
-NAME        ?= DINO
-COMPRESSED  ?= YES
-ICON        ?= iconc.png
-DESCRIPTION ?= "Dino Run CE"
+NAME = DINO
+COMPRESSED = YES
+ICON = iconc.png
+DESCRIPTION = "Dino Run CE"
 
 # ----------------------------
 # Other Options (Advanced)
 # ----------------------------
 
-USING_LLVM := $(shell grep clang $(CEDEV)/include/.makefile; echo $$?)
-
 GIT_COMMIT := $(shell git rev-parse --short HEAD)
 GIT_DIFF_STATUS := $(shell git diff-index --quiet HEAD; echo $$?)
 
-ifeq ($(USING_LLVM), 1)
-EXTRA_CFLAGS        += COMMIT=$(GIT_COMMIT) DIFF_STATUS=$(GIT_DIFF_STATUS)
-else
-EXTRA_CFLAGS        += -DCOMMIT=$(GIT_COMMIT) -DDIFF_STATUS=$(GIT_DIFF_STATUS)
-endif
-#USE_FLASH_FUNCTIONS ?= YES|NO
-#OUTPUT_MAP          ?= YES|NO
-#ARCHIVED            ?= YES|NO
-#OPT_MODE            ?= -optsize|-optspeed
-#SRCDIR              ?= src
-#OBJDIR              ?= obj
-#BINDIR              ?= bin
-#GFXDIR              ?= src/gfx
-#V                   ?= 1
+EXTRA_CFLAGS = -DCOMMIT=$(GIT_COMMIT) -DDIFF_STATUS=$(GIT_DIFF_STATUS)
 
-include $(CEDEV)/include/.makefile
+include $(shell cedev-config --makefile)
 
 $(OBJDIR)/font/font.src: $(SRCDIR)/font/font.inc
 

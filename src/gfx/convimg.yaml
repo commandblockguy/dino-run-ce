@@ -1,65 +1,68 @@
-output: c
-  include-file: gfx.h
-  palettes:
-    - gfx_pal
-    - night_pal
-  converts:
-    - images
+outputs:
+  - type: c
+    include-file: gfx.h
+    palettes:
+      - gfx_pal
+      - night_pal
+    converts:
+      - images
 
-palette: gfx_pal
-  fixed-color: {index:   0, r:   0, g:   0, b: 255}
-  fixed-color: {index:   1, r: 255, g: 255, b: 255}
-  fixed-color: {index:   2, r:  83, g:  83, b:  83}
-  fixed-color: {index:   3, r: 218, g: 218, b: 218}
-  fixed-color: {index:   4, r: 116, g: 116, b: 116}
-  fixed-color: {index:   5, r:  69, g:  69, b:  69}
-  fixed-color: {index:   6, r: 220, g:  25, b:  25}
-  fixed-color: {index:   7, r:  58, g: 181, b:   9}
-  fixed-color: {index:   8, r:   0, g:   0, b:   0}
-  images: automatic
+palettes:
+  - name: gfx_pal
+    fixed-entries:
+      - color: {index:   0, r:   0, g:   0, b: 255}
+      - color: {index:   1, r: 255, g: 255, b: 255}
+      - color: {index:   2, r:  83, g:  83, b:  83}
+      - color: {index:   3, r: 218, g: 218, b: 218}
+      - color: {index:   4, r: 116, g: 116, b: 116}
+      - color: {index:   5, r:  69, g:  69, b:  69}
+      - color: {index:   6, r: 220, g:  25, b:  25}
+      - color: {index:   7, r:  58, g: 181, b:   9}
+      - color: {index:   8, r:   0, g:   0, b:   0}
+    images: automatic
 
-palette: night_pal
-  fixed-color: {index:   1, r:   0, g:   0, b:   0}
-  fixed-color: {index:   2, r: 173, g: 173, b: 173}
-  fixed-color: {index:   3, r:  37, g:  37, b:  37}
-  fixed-color: {index:   4, r: 139, g: 139, b: 139}
-  images:
-    - dummy.png
+  - name: night_pal
+    fixed-entries:
+      - color: {index:   1, r:   0, g:   0, b:   0}
+      - color: {index:   2, r: 173, g: 173, b: 173}
+      - color: {index:   3, r:  37, g:  37, b:  37}
+      - color: {index:   4, r: 139, g: 139, b: 139}
 
-convert: images
-  style: rlet
-  transparent-color-index: 0
-  palette: gfx_pal
-  images:
-    - bird_0.png
-    - horizon_1.png
-    - moon_5.png
-    - bird_1.png
-    - horizon_2.png
-    - moon_6.png
-    - cloud_sprite.png
-    - horizon_3.png
-    - restart.png
-    - horizon_4.png
-    - dino_duck_left.png
-    - dino_duck_right.png
-    - dino_left.png
-    - dino_midair.png
-    - dino_right.png
-    - moon_0.png
-    - star_0.png
-    - dino_stationary.png
-    - moon_1.png
-    - star_1.png
-    - dino_dead.png
-    - moon_2.png
-    - star_2.png
-    - moon_3.png
-    - horizon_0.png
-    - moon_4.png
-    - cactus_small_1.png
-    - cactus_small_2.png
-    - cactus_small_3.png
-    - cactus_large_1.png
-    - cactus_large_2.png
-    - cactus_large_3.png
+converts:
+  - name: images
+    style: rlet
+    transparent-color-index: 0
+    palette: gfx_pal
+    images:
+      - bird_0.png
+      - horizon_1.png
+      - moon_5.png
+      - bird_1.png
+      - horizon_2.png
+      - moon_6.png
+      - cloud_sprite.png
+      - horizon_3.png
+      - restart.png
+      - horizon_4.png
+      - dino_duck_left.png
+      - dino_duck_right.png
+      - dino_left.png
+      - dino_midair.png
+      - dino_right.png
+      - moon_0.png
+      - star_0.png
+      - dino_stationary.png
+      - moon_1.png
+      - star_1.png
+      - dino_dead.png
+      - moon_2.png
+      - star_2.png
+      - moon_3.png
+      - horizon_0.png
+      - moon_4.png
+      - cactus_small_1.png
+      - cactus_small_2.png
+      - cactus_small_3.png
+      - cactus_large_1.png
+      - cactus_large_2.png
+      - cactus_large_3.png
