@@ -275,7 +275,6 @@ void draw_game_over(void) {
 
     gfx_SetTextFGColor(FADE_TEXT);
     gfx_PrintStringXY("Dino Run CE by commandblockguy", 3, LCD_HEIGHT - 18);
-    gfx_PrintStringXY("https://discord.gg/DZbmraw", 3, LCD_HEIGHT - 10);
     gfx_PrintStringXY(version_string, LCD_WIDTH - gfx_GetStringWidth(version_string) - 3, 2);
 
     gfx_SetDrawBuffer();
