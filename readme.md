@@ -2,7 +2,7 @@
 
 A clone of Google Chrome's dinosaur game (from the no internet screen) for the TI-84 Plus CE graphing calculator.
 
-![Preview](https://cdn.discordapp.com/attachments/466808269789200387/661356334322548755/dino.png)
+![Preview](https://www.cemetech.net/media/archives/screenshots/2021/11/screenshot_111.png)
 
 ### Installation:
 Send DINO.8xp to the calculator using TI-Connect CE (for Windows and Mac) or TiLP (for Linux).
